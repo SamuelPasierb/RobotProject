@@ -1,0 +1,1 @@
+javac -d ../out --class-path ../lib/ev3classes.jar; hamk/project/Main.java

@@ -1,0 +1,1 @@
+jar -cmvf MANIFEST.MF ../build/main.jar hamk/project/
