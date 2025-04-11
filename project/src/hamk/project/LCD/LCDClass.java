@@ -8,11 +8,21 @@ import lejos.utility.Delay;
 public class LCDClass extends Thread {
 
     public static AtomicReference<String> distance;
+    public static AtomicReference<String> leftSpeed;
+    public static AtomicReference<String> rightSpeed;
     private final int distanceY = 0;
+    private final int speedY = 1;
 
     public LCDClass() {
+
+        // Distance
         distance = new AtomicReference<>();
         distance.set("");
+
+        // Speeds
+        leftSpeed = new AtomicReference<>(); rightSpeed = new AtomicReference<>();
+        leftSpeed.set(""); rightSpeed.set("");
+
     }
 
     @Override
@@ -25,8 +35,11 @@ public class LCDClass extends Thread {
             // 500 ms delay
             Delay.msDelay(500);
 
+            // Update LCD
             LCD.clear();
-            LCD.drawString(distance.toString(), 0, this.distanceY);
+            LCD.drawString(distance.get(), 0, this.distanceY);
+            LCD.drawString(leftSpeed.get(), 0, this.speedY);
+            LCD.drawString(rightSpeed.get(), 7, this.speedY);
 
         }
 

@@ -1,10 +1,13 @@
 package hamk.project.Sensors;
 
-import lejos.hardware.port.Port;
+import lejos.hardware.motor.Motor;
+import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
+import hamk.project.Main;
 import hamk.project.LCD.LCDClass;
+import hamk.project.Motors.MotorClass;
 
 public class UltraSonic extends Thread {
     
@@ -14,8 +17,8 @@ public class UltraSonic extends Thread {
     private final float[] sample;
 
     // Constructor
-    public UltraSonic(Port port) {
-        this.ultraSonicSensor = new EV3UltrasonicSensor(port);
+    public UltraSonic() {
+        this.ultraSonicSensor = new EV3UltrasonicSensor(SensorPort.S2);
 
         this.distance = this.ultraSonicSensor.getDistanceMode();
         this.sample = new float[this.distance.sampleSize()];
@@ -30,7 +33,17 @@ public class UltraSonic extends Thread {
             distance.fetchSample(sample, 0);
 
             // TODO: do stuff with distance
-            LCDClass.distance.set(roundToCM(sample[0]) + " cm");
+
+            // Slown down if close to an object
+            if (roundToCM(sample[0]) <= 30.0f) {
+                Main.stopMotors();
+            } else {
+                if (!Main.leftMotor.isRunning()) {
+                    Main.startMotors();
+                }
+            }
+
+            LCDClass.distance.set("Distance: " + roundToCM(sample[0]) + " cm");
 
             // Delay by 100ms
             Delay.msDelay(100);

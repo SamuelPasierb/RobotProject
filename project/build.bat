@@ -1,0 +1,2 @@
+cd src
+compile.bat
