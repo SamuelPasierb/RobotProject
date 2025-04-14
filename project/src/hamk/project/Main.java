@@ -116,4 +116,8 @@ public class Main {
         MotorClass.turnTime.set(time);
     }
 
+    private static void rotation(int degrees) {
+        leftMotor.turnDegrees.set(degrees);
+        rightMotor.turnDegrees.set(-degrees);
+    }
 }
