@@ -10,6 +10,7 @@ public class LCDClass extends Thread {
     public static AtomicReference<String> distance;
     public static AtomicReference<String> leftSpeed;
     public static AtomicReference<String> rightSpeed;
+    public static AtomicReference<String> light;
     private final int distanceY = 0;
     private final int speedY = 1;
 
