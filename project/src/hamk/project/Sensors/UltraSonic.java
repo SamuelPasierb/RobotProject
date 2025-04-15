@@ -7,7 +7,6 @@ import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
 import hamk.project.Main;
 import hamk.project.LCD.LCDClass;
-import hamk.project.Motors.MotorClass;
 
 public class UltraSonic extends Thread {
     
@@ -34,15 +33,7 @@ public class UltraSonic extends Thread {
 
             // TODO: do stuff with distance
 
-            // Slown down if close to an object
-            if (roundToCM(sample[0]) <= 30.0f) {
-                Main.stopMotors();
-            } else {
-                if (!Main.leftMotor.isRunning()) {
-                    Main.startMotors();
-                }
-            }
-
+            // Update atomic value
             LCDClass.distance.set("Distance: " + roundToCM(sample[0]) + " cm");
 
             // Delay by 100ms

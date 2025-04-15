@@ -5,18 +5,18 @@ import lejos.hardware.lcd.LCD;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
+import lejos.utility.Delay;
 
 public class LightSensor extends Thread {
-    private final EV3ColorSensor colorsensor;
+
+    private final EV3ColorSensor colorSensor;
     private final SampleProvider light;
     private final float[] sample;
 
     public LightSensor() {
         
-
-
-        this.colorsensor = new EV3ColorSensor(SensorPort.S3);
-        this.light = colorsensor.getAmbientMode();
+        this.colorSensor = new EV3ColorSensor(SensorPort.S3);
+        this.light = colorSensor.getAmbientMode();
         this.sample = new float[light.sampleSize()];
     }
 
@@ -25,7 +25,10 @@ public class LightSensor extends Thread {
         while (!this.isInterrupted()) {
             light.fetchSample(sample, 0);
             LCD.clear();
-            LCDClass.light.set("Light intensity: " + rounding(sample[0]) + "%", 0, 0);
+            LCDClass.reflection.set("Reflection: " + rounding(sample[0]) + "%");
+
+            // Delay by 100ms
+            Delay.msDelay(100);
         }
     }
 
