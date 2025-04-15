@@ -12,9 +12,6 @@ public class LightSensor extends Thread {
     private final float[] sample;
 
     public LightSensor() {
-        
-
-
         this.colorsensor = new EV3ColorSensor(SensorPort.S3);
         this.light = colorsensor.getAmbientMode();
         this.sample = new float[light.sampleSize()];
@@ -25,7 +22,7 @@ public class LightSensor extends Thread {
         while (!this.isInterrupted()) {
             light.fetchSample(sample, 0);
             LCD.clear();
-            LCDClass.light.set("Light intensity: " + rounding(sample[0]) + "%", 0, 0);
+            LCDClass.light.set("Light intensity: " + rounding(sample[0]) + "%");
         }
     }
 

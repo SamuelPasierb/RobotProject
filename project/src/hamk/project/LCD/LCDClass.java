@@ -13,6 +13,7 @@ public class LCDClass extends Thread {
     public static AtomicReference<String> light;
     private final int distanceY = 0;
     private final int speedY = 1;
+    private final int lightY = 2;
 
     public LCDClass() {
 
@@ -24,6 +25,9 @@ public class LCDClass extends Thread {
         leftSpeed = new AtomicReference<>(); rightSpeed = new AtomicReference<>();
         leftSpeed.set(""); rightSpeed.set("");
 
+        // light
+        light = new AtomicReference<>();
+        light.set("");
     }
 
     @Override
@@ -41,6 +45,7 @@ public class LCDClass extends Thread {
             LCD.drawString(distance.get(), 0, this.distanceY);
             LCD.drawString(leftSpeed.get(), 0, this.speedY);
             LCD.drawString(rightSpeed.get(), 7, this.speedY);
+            LCD.drawString(light.get(), 0, this.lightY);
 
         }
 

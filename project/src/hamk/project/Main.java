@@ -4,6 +4,7 @@ import hamk.project.LCD.LCDClass;
 import hamk.project.Motors.LeftMotor;
 import hamk.project.Motors.MotorClass;
 import hamk.project.Motors.RightMotor;
+import hamk.project.Sensors.LightSensor;
 import hamk.project.Sensors.UltraSonic;
 import lejos.hardware.Button;
 import lejos.utility.Delay;
@@ -12,6 +13,7 @@ public class Main {
 
     private static UltraSonic ultraSonic;
     private static LCDClass lcd;
+    private static LightSensor lightSensor;
     public static LeftMotor leftMotor;
     public static RightMotor rightMotor;
 
@@ -20,12 +22,14 @@ public class Main {
         // Threads
         ultraSonic = new UltraSonic();
         lcd = new LCDClass();
+        lightSensor = new LightSensor();
         leftMotor = new LeftMotor();
         rightMotor = new RightMotor();
 
         // Start threads
         ultraSonic.start();
         lcd.start();
+        lightSensor.start();
         leftMotor.start();
         rightMotor.start();
 
@@ -69,6 +73,7 @@ public class Main {
     
         ultraSonic.interrupt();
         lcd.interrupt();
+        lightSensor.interrupt();
         leftMotor.interrupt();
         rightMotor.interrupt();
 
