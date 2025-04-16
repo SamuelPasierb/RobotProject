@@ -59,6 +59,12 @@ public class Pilot extends Thread {
                 PILOT.stop();
             }
 
+            // Turning in an arc
+            if (turnDegrees.get() != 0) {
+                PILOT.arc(50, turnDegrees.get());
+                turnDegrees.set(0);
+            }
+
             // Delay by 100ms
             Delay.msDelay(100);
 
@@ -75,13 +81,19 @@ public class Pilot extends Thread {
     public void setSpeed(int speed) {
         LCDClass.speed.set("Speed: " + speed);
         this.speed = speed;
-        this.PILOT.setLinearSpeed(this.speed);
-        this.PILOT.forward();
+        // this.PILOT.setLinearSpeed(this.speed);
+        Motor.A.setSpeed(this.speed);
+        Motor.D.setSpeed(this.speed);
     }
 
     // Changing speed by 'speed'
     public void changeSpeedBy(int speed) {
         if (this.speed - speed > 0) this.setSpeed(this.speed + speed);
+    }
+
+    // Rotates robot by 'degrees'
+    private void rotate(int degrees) {
+        this.PILOT.rotate(degrees);
     }
 
 }
