@@ -13,6 +13,8 @@ public class LightSensor extends Thread {
     private final SampleProvider light;
     private final float[] sample;
 
+    //Constructor to initialize the LightSensor with the EV3ColorSensor.
+    //Sets up the sensor on port S3 and configures it for ambient light measurement.
     public LightSensor() {
         
         this.colorSensor = new EV3ColorSensor(SensorPort.S3);
@@ -32,6 +34,7 @@ public class LightSensor extends Thread {
         }
     }
 
+    //Rounds a float value to the nearest integer and scales it by 100 for percentage representation.
     private float rounding(float dist) {
         return Math.round((int)(dist*100));
     }
