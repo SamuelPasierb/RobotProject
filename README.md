@@ -14,6 +14,10 @@ For this project we are using **Visual Studio Code** as an IDE for programming, 
 
 ## Team
 
-|Smorgulenko **Artjom**|Nguyen **Anh**|Pasierb **Samuel**|
+| Header 1 | Header 2 | Header 2 |
+|----------|----------|----------|
+| Smorgulenko **Artjom**   | Nguyen **Anh**   | Pasierb **Samuel**   |
 
 ## Timelines
+
+![timelines](img/timelines.png) 
