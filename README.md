@@ -14,7 +14,7 @@ For this project we are using **Visual Studio Code** as an IDE for programming, 
 
 ## Team
 
-| Header 1 | Header 2 | Header 2 |
+
 |----------|----------|----------|
 | Smorgulenko **Artjom**   | Nguyen **Anh**   | Pasierb **Samuel**   |
 
