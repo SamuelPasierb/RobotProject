@@ -33,6 +33,11 @@ public class UltraSonic extends Thread {
 
             // TODO: do stuff with distance
 
+            // 30 cm from an obstacle
+            if (sample[0] <= 0.3) {
+                //Main.getPilot().avoidObstacle();
+            }
+
             // Update atomic value
             LCDClass.distance.set("Distance: " + roundToCM(sample[0]) + " cm");
 
