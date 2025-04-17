@@ -1,18 +1,19 @@
 # Applied Application Project - Group 7
 ## Project info
-For this project, the main goal is to create and implement certain functionalities to a LEGO EV3 Robot, such as:
-- LCD Screen for printing some information.
-- Motors for the movement of the robot.
-- Light Sensor for the line follower.
-- UltraSonic Sensor for the obstacle avoidance.
+In this project we aim to make a **EV3 Lego Mindstorm robot** move alongside a track using **Light Sensor** and avoid obstacles using **Ultra Sonic Sensor**.
 
-## Tasks
-- [x] **LCD Printing**
-- [x] **Robot Movements**
-- [x] **Changing Speed**
-- [x] **Read Distance**
-- [ ] **Line Follower**
-- [ ] **Obstacle Avoidance**
-- [x] **Class for Light Sensor**
-- [x] **Class for Ultrasonic Sensor**
-- [ ] **Combine the functionalities**
+## Main objectives
+- to learn how to use **java threads**
+- to learn how to use **LeJOS library** for the robot
+- to deepen our under understanding of **OOP**
+- to create a smart robot that will avoid obstacles using an **Ultra Sonic Sensor**
+- to make the robot move alongside a certain path while using a **Light Sensor**
+
+## Tools
+For this project we are using **Visual Studio Code** as an IDE for programming, **Java** as the programming language, **LeJOS library** to control the **EV3 robot**, **GitHub** as a **Version Control system**, **Jira** and **Confluence** to make a clear schedule and document our progress during this project.
+
+## Team
+
+|Smorgulenko **Artjom**|Nguyen **Anh**|Pasierb **Samuel**|
+
+## Timelines
