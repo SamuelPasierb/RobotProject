@@ -11,8 +11,8 @@ For this project, the main goal is to create and implement certain functionaliti
 - [x] **Robot Movements**
 - [x] **Changing Speed**
 - [x] **Read Distance**
-- [x] **Line Follower**
-- [x] **Obstacle Avoidance**
+- [ ] **Line Follower**
+- [ ] **Obstacle Avoidance**
 - [x] **Class for Light Sensor**
 - [x] **Class for Ultrasonic Sensor**
-- [x] **Combine the functionalities**
+- [ ] **Combine the functionalities**
