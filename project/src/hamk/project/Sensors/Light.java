@@ -15,6 +15,8 @@ public class Light extends Thread {
 
     private final float THRESHOLD = 0.2f;
 
+    //Constructor to initialize the LightSensor with the EV3ColorSensor.
+    //Sets up the sensor on port S3 and configures it for ambient light measurement.
     public Light() {
         
         this.colorSensor = new EV3ColorSensor(SensorPort.S3);
@@ -22,6 +24,7 @@ public class Light extends Thread {
         this.sample = new float[light.sampleSize()];
     }
 
+    // run a thread
     @Override
     public void run() {
         while (!this.isInterrupted()) {
