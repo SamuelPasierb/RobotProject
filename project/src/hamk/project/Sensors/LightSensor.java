@@ -22,6 +22,7 @@ public class LightSensor extends Thread {
         this.sample = new float[light.sampleSize()];
     }
 
+    // run a thread
     @Override
     public void run() {
         while (!this.isInterrupted()) {
