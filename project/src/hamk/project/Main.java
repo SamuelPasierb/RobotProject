@@ -32,7 +32,7 @@ public class Main {
 
         // Start movement
         pilot.startMotors();
-        pilot.setSpeed(50);
+        pilot.setSpeed(50, 50);
 
         while (!Button.ESCAPE.isDown()) {           
 
