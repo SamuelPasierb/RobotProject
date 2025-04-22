@@ -21,13 +21,14 @@ public class Pilot extends Thread {
 
     // Speed
     private int speed = 0;
+    private boolean slowedDown = false;
 
     // Atomic values
     private AtomicBoolean running;
     private AtomicBoolean forward;
     private AtomicBoolean avoid;
     private AtomicBoolean turning;
-    private AtomicInteger turnDegrees;
+    private AtomicBoolean avoiding;
 
     public Pilot() {
         
@@ -42,8 +43,8 @@ public class Pilot extends Thread {
         this.running = new AtomicBoolean(false);
         this.forward = new AtomicBoolean(true);
         this.avoid = new AtomicBoolean(false);
+        this.avoiding = new AtomicBoolean(false);
         this.turning = new AtomicBoolean(false);
-        this.turnDegrees = new AtomicInteger(0);
     }
 
     @Override
@@ -66,10 +67,15 @@ public class Pilot extends Thread {
             }
 
             // Turning in an arc
-            if (this.turning.get()) {
+            if (this.turning.get() && !this.avoiding.get()) {
                 if (Motor.A.getSpeed() == Motor.D.getSpeed()) this.turnRight();
             } else {
                 this.setSpeed(this.speed);
+            }
+
+            // Avoid obstacle
+            if (this.avoiding.get()) {
+                
             }
 
             // Avoidance
@@ -115,6 +121,10 @@ public class Pilot extends Thread {
         this.turning.set(false);
     }
 
+    public void avoidingObstacle() {
+        this.avoiding.set(true);
+    }
+
     // Avoid obstacle
     public void avoidObstacle() {
         this.running.set(false);
@@ -133,6 +143,21 @@ public class Pilot extends Thread {
     // Changing speed by 'speed'
     public void changeSpeedBy(int speed) {
         if (this.speed - speed > 0) this.setSpeed(this.speed + speed);
+    }
+
+    // Slow down when obstacle getting close
+    public void slowDown() {
+        if (!slowedDown) {
+            this.slowedDown = true;
+            changeSpeedBy(-25);
+        }
+    }
+
+    public void speedUp() {
+        if (slowedDown) {
+            this.slowedDown = false;
+            changeSpeedBy(50);
+        }
     }
 
     // Turn Right
