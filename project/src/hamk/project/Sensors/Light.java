@@ -34,8 +34,10 @@ public class Light extends Thread {
             // Update atomic value
             LCDClass.reflection.set("Reflection: " + (sample[0] * 100.0f) + "%");
 
-            if (sample[0] > BACKGROUND) {
+            if (sample[0] > BACKGROUND) { // RIGHT
                 Main.getPilot().turn("RIGHT");
+            } else if (sample[0] > BORDER) { // LEFT
+                Main.getPilot().turn("LEFT");
             } else { // Move normally
                 Main.getPilot().endTurn();
             }
