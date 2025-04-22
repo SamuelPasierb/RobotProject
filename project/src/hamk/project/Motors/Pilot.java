@@ -25,8 +25,8 @@ public class Pilot extends Thread {
     private final MovePilot PILOT;
 
     // Speed
-    private int leftSpeed = 0;
-    private int rightSpeed = 0;
+    private float leftSpeed = 0;
+    private float rightSpeed = 0;
 
     // Atomic values
     private AtomicBoolean running;
@@ -47,6 +47,7 @@ public class Pilot extends Thread {
 
         // Pilot
         this.PILOT = new MovePilot(new WheeledChassis(new Wheel[] {leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL));
+
 
         // Atomic values
         this.running = new AtomicBoolean(false);
@@ -94,7 +95,7 @@ public class Pilot extends Thread {
             }
 
             // Delay by 20ms
-            Delay.msDelay(20);
+            // Delay.msDelay(50);
 
         }
 
@@ -137,12 +138,12 @@ public class Pilot extends Thread {
     }
 
     // Setting speed
-    public void setSpeed(int leftSpeed, int rightSpeed) {
+    public void setSpeed(float leftSpeed, float rightSpeed) {
         this.setSpeed(leftSpeed, rightSpeed, true);
     }
 
     // Setting speed
-    public void setSpeed(int leftSpeed, int rightSpeed, boolean update) {
+    public void setSpeed(float leftSpeed, float rightSpeed, boolean update) {
         
         if (update) {
             this.leftSpeed = leftSpeed;
@@ -162,12 +163,12 @@ public class Pilot extends Thread {
 
     // Turn Right
     private void turnRight() {
-        this.setSpeed(1, this.rightSpeed * 3, false);
+        this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f, false);
     }
 
     // Turn Left
     private void turnLeft() {
-        this.setSpeed(this.leftSpeed * 3, 1, false);
+        this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f, false);
     }
 
     // Rotates robot by 'degrees'
