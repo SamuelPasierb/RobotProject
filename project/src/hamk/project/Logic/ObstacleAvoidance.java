@@ -10,9 +10,14 @@ public class ObstacleAvoidance {
     private final int FULL_WIDTH = SAFE_ZONE + WIDTH + SAFE_ZONE;
 
     // Zones
-    private final int SLOW_DONE_ZONE = 50;
-    private final int WILL_CRASH_ZONE = 30; // 30cm, because half of the robot's width is 7.5cm and the biggest angle is 75° so: 7.5/cos(75) ~= 30
+    private final int SLOW_DONE_ZONE = 40;
+    private final int WILL_CRASH_ZONE = 25;
     private final int DEAD_ZONE = 5;
+
+    private final static Runnable runnable = new Runnable() {
+        @Override
+        public void run() { Main.getPilot().avoid(); }
+    };
 
     public void avoid(float distance) {
 
@@ -33,9 +38,15 @@ public class ObstacleAvoidance {
 
         // Speed up
         else {
+            if (!Main.getPilot().motorsRunning()) Main.getPilot().startMotors();
             Main.getPilot().speedUp();
         }
 
+    }
+
+    // Thread for avoiding obstacle
+    public static Thread avoidObstacle() {
+        return new Thread(runnable);
     }
 
 }

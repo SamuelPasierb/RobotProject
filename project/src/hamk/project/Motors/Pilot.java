@@ -1,17 +1,16 @@
 package hamk.project.Motors;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 
-import hamk.project.LCD.LCDClass;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.Motor;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
-import lejos.utility.Delay;
+
+import hamk.project.LCD.LCDClass;
+import hamk.project.Logic.ObstacleAvoidance;
 
 public class Pilot extends Thread {
     
@@ -27,34 +26,36 @@ public class Pilot extends Thread {
     // Speed
     private float leftSpeed = 0;
     private float rightSpeed = 0;
+    private boolean slowedDown = false;
 
     // Atomic values
     private AtomicBoolean running;
     private AtomicBoolean forward;
     private AtomicBoolean avoid;
+    private AtomicBoolean avoiding;
+    private AtomicBoolean avoidThread;
     private AtomicReference<String> turning;
-    private AtomicInteger turnDegrees;
 
     public Pilot() {
         
         // Motors
-        this.leftMotor = new EV3LargeRegulatedMotor(MotorPort.A);
-        this.rightMotor = new EV3LargeRegulatedMotor(MotorPort.D);
+        this.leftMotor = new EV3LargeRegulatedMotor(MotorPort.D);
+        this.rightMotor = new EV3LargeRegulatedMotor(MotorPort.A);
 
         // Wheels
-        this.leftWheel = WheeledChassis.modelWheel(leftMotor, WHEEL_DIAMETER).offset(-50);
-        this.rightWheel = WheeledChassis.modelWheel(rightMotor, WHEEL_DIAMETER).offset(50); 
+        this.leftWheel = WheeledChassis.modelWheel(leftMotor, WHEEL_DIAMETER).offset(-WHEELBASE / 2);
+        this.rightWheel = WheeledChassis.modelWheel(rightMotor, WHEEL_DIAMETER).offset(WHEELBASE / 2); 
 
         // Pilot
         this.PILOT = new MovePilot(new WheeledChassis(new Wheel[] {leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL));
-
 
         // Atomic values
         this.running = new AtomicBoolean(false);
         this.forward = new AtomicBoolean(true);
         this.avoid = new AtomicBoolean(false);
         this.turning = new AtomicReference<String>("");
-        this.turnDegrees = new AtomicInteger(0);
+        this.avoiding = new AtomicBoolean(false);
+        this.avoidThread = new AtomicBoolean(false);
     }
 
     @Override
@@ -66,7 +67,7 @@ public class Pilot extends Thread {
         while (!this.isInterrupted()) {
 
             // Running
-            if (this.running.get() && !this.PILOT.isMoving()) {
+            if (this.running.get() && !this.PILOT.isMoving() && !this.avoidThread.get()) {
                 
                 this.setSpeed(this.leftSpeed, this.rightSpeed);
 
@@ -78,19 +79,22 @@ public class Pilot extends Thread {
                 PILOT.stop();
             }
 
-            // Avoid obstacle
-            if (!this.turning.get().isEmpty()) {
+            // Follow line
+            if (!this.turning.get().isEmpty() && !this.avoiding.get() && !this.avoidThread.get()) {
                 if (leftMotor.getSpeed() == rightMotor.getSpeed()) {
                     if (this.turning.get().equals("RIGHT")) this.turnRight();
                     else this.turnLeft();
                 }
-            } else {
+            } else if (!this.avoidThread.get()) {
                 this.setSpeed(this.leftSpeed, this.rightSpeed);
             }
 
             // Avoid obstacle
-            if (this.avoiding.get()) {
-                
+            if (this.avoiding.get() && !this.avoidThread.get()) {
+                this.avoiding.set(false);
+                // TODO: decide whether to go left or right to go inside
+                this.avoidThread.set(true);
+                ObstacleAvoidance.avoidObstacle().start();
             }
 
             // Avoidance
@@ -100,7 +104,7 @@ public class Pilot extends Thread {
             }
 
             // Delay by 20ms
-            // Delay.msDelay(50);
+            // Delay.msDelay(20);
 
         }
 
@@ -114,6 +118,11 @@ public class Pilot extends Thread {
     // Stop motors
     public void stopMotors() {
         this.running.set(false);
+    }
+
+    // Are motors running
+    public boolean motorsRunning() {
+        return this.running.get();
     }
 
     // Go forward
@@ -140,12 +149,6 @@ public class Pilot extends Thread {
         this.avoiding.set(true);
     }
 
-    // Avoid obstacle
-    public void avoidObstacle() {
-        this.running.set(false);
-        this.avoid.set(true);
-    }
-
     // Setting speed
     public void setSpeed(float leftSpeed, float rightSpeed) {
         this.setSpeed(leftSpeed, rightSpeed, true);
@@ -159,7 +162,7 @@ public class Pilot extends Thread {
             this.rightSpeed = rightSpeed;
         }
 
-        LCDClass.speed.set("Speed: " + ((leftSpeed + rightSpeed) / 2));
+        LCDClass.speed.set("Speed: " + ((int) (leftSpeed + rightSpeed) / 2));
         
         leftMotor.setSpeed(leftSpeed);
         rightMotor.setSpeed(rightSpeed);
@@ -172,33 +175,47 @@ public class Pilot extends Thread {
 
     // Slow down when obstacle getting close
     public void slowDown() {
-        if (!slowedDown) {
+        if (!this.slowedDown) {
             this.slowedDown = true;
-            changeSpeedBy(-25);
+            setSpeed(150, 150, true);
         }
     }
 
     public void speedUp() {
-        if (slowedDown) {
+        if (this.slowedDown) {
             this.slowedDown = false;
-            changeSpeedBy(50);
+            setSpeed(200, 200, true);
         }
-    }
-
-    // Turn Right
-    private void turnRight() {
-        this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f, false);
     }
 
     // Turn Left
     private void turnLeft() {
+        this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f, false);
+    }
+
+    // Turn Right
+    private void turnRight() {
         this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f, false);
     }
 
     // Rotates robot by 'degrees'
-    private void rotate(int degrees) {
+    public void rotate(int degrees) {
         this.PILOT.rotate(degrees);
         this.running.set(true);
+    }
+
+    public void avoid() {
+        // Speed
+        this.PILOT.setAngularSpeed(200);
+        this.PILOT.setLinearSpeed(400);
+
+        // Around
+        this.PILOT.arc(-250, 45);
+        this.PILOT.arc(250, 90);
+        this.PILOT.arc(-250, 45);
+
+        this.avoidThread.set(false);
+        this.avoiding.set(false);
     }
 
 }

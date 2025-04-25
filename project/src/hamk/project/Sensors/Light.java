@@ -5,7 +5,6 @@ import hamk.project.LCD.LCDClass;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
-import lejos.utility.Delay;
 
 public class Light extends Thread {
 

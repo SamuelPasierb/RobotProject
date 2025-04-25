@@ -1,11 +1,10 @@
 package hamk.project.Sensors;
 
-import lejos.hardware.motor.Motor;
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.robotics.SampleProvider;
 import lejos.utility.Delay;
-import hamk.project.Main;
+
 import hamk.project.LCD.LCDClass;
 import hamk.project.Logic.ObstacleAvoidance;
 
@@ -36,6 +35,7 @@ public class UltraSonic extends Thread {
             // Get the current distance
             distance.fetchSample(sample, 0);
 
+            // Obstacle avoidance
             this.obstacleAvoidance.avoid(roundToCM(sample[0]));
 
             // 30 cm from an obstacle

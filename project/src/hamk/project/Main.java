@@ -26,7 +26,7 @@ public class Main {
 
         // Start threads
         ultraSonic.start();
-        light.start();
+        // light.start();
         lcd.start();
         pilot.start();
 
@@ -46,8 +46,8 @@ public class Main {
                 pilot.changeSpeedBy(-10);
             }
 
-            // Delay by 100ms
-            Delay.msDelay(100);
+            // Delay by 20ms
+            Delay.msDelay(20);
 
         }
     
