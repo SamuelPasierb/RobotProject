@@ -24,6 +24,8 @@ public class Main {
         lcd = new LCDClass();
         pilot = new Pilot();
 
+        if (Button.waitForAnyPress() == Button.LEFT.getId()) pilot.left = -1;
+
         // Start threads
         ultraSonic.start();
         // light.start();

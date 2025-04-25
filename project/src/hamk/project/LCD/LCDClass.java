@@ -26,6 +26,10 @@ public class LCDClass extends Thread {
     // Constructor
     public LCDClass() {
 
+        // Start text
+        LCD.drawString("Press a button", 2, 3);
+        LCD.drawString("to start.", 4, 4);
+
         // Distance
         distance = new AtomicReference<>("");
 

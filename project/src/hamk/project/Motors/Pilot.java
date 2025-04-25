@@ -36,6 +36,9 @@ public class Pilot extends Thread {
     private AtomicBoolean avoidThread;
     private AtomicReference<String> turning;
 
+    // Avoid direction
+    public int left = 1;
+
     public Pilot() {
         
         // Motors
@@ -205,15 +208,18 @@ public class Pilot extends Thread {
     }
 
     public void avoid() {
+
         // Speed
         this.PILOT.setAngularSpeed(200);
         this.PILOT.setLinearSpeed(400);
 
         // Around
-        this.PILOT.arc(-250, 45);
-        this.PILOT.arc(250, 90);
-        this.PILOT.arc(-250, 45);
+        // left is used to determine whether to make an arc to the left or to the right
+        this.PILOT.arc(-250 * this.left, 45);
+        this.PILOT.arc(250 * this.left, 90);
+        this.PILOT.arc(-250 * this.left, 45);
 
+        // Finished avoiding
         this.avoidThread.set(false);
         this.avoiding.set(false);
     }
