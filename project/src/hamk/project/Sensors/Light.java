@@ -13,7 +13,8 @@ public class Light extends Thread {
     private final SampleProvider light;
     private final float[] sample;
 
-    private final float THRESHOLD = 0.2f;
+    private final float BACKGROUND = 0.3f;
+    private final float BORDER = 0.1f;
 
     //Constructor to initialize the LightSensor with the EV3ColorSensor.
     //Sets up the sensor on port S3 and configures it for ambient light measurement.
@@ -33,14 +34,16 @@ public class Light extends Thread {
             // Update atomic value
             LCDClass.reflection.set("Reflection: " + (sample[0] * 100.0f) + "%");
 
-            if (sample[0] > THRESHOLD) {
-                Main.getPilot().turn();
-            } else { // Move normally
+            if (sample[0] > BACKGROUND) { // RIGHT
+                Main.getPilot().turn("LEFT");
+            } else if (sample[0] > BORDER) { // LEFT
                 Main.getPilot().endTurn();
+            } else { // Move normally
+                Main.getPilot().turn("RIGHT");
             }
 
-            // Delay by 100ms
-            Delay.msDelay(100);
+            // Delay by 20ms
+            // Delay.msDelay(75);
         }
     }
 
