@@ -8,7 +8,10 @@ import lejos.utility.Delay;
 
 /**
  * <h3>Class for LCD.</h3>
+ * This class handles the LCD Screen operations.
+ * <p>
  * Extends {@link Thread} so it can run without disturbing other more important functions of the robot. 
+ * </p>
  * @author Artjom Smorgulenko, Samuel Pasierb
  */
 public class LCDClass extends Thread {
@@ -23,7 +26,12 @@ public class LCDClass extends Thread {
     private final int reflectionY = 1;
     private final int speedY = 2;
 
-    // Constructor
+    /**
+      * <h3>Constructor for the LCD Screen</h3>
+      * <p>
+      * Sets the {@code distance, reflection, speed} values.
+      * </p>
+      */
     public LCDClass() {
 
         // Start text

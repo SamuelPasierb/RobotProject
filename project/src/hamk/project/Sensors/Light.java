@@ -6,6 +6,14 @@ import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
 
+/**
+  * <h3>Class for the Light sensor</h3>
+  * This class handles operations with the light sensor.
+  * <p>
+  * Extends {@link Thread} so it can run without disturbing other more important functions of the robot.
+  * </p>
+  * @author Artjom Smorgulenko, Samuel Pasierb
+  */
 public class Light extends Thread {
 
     private final EV3ColorSensor colorSensor;
@@ -15,8 +23,11 @@ public class Light extends Thread {
     private final float BACKGROUND = 0.3f;
     public static final float BORDER = 0.1f;
 
-    //Constructor to initialize the LightSensor with the EV3ColorSensor.
-    //Sets up the sensor on port S3 and configures it for ambient light measurement.
+    /**
+      *  <h3>Constructor to initialize the LightSensor with the EV3ColorSensor.</h3>
+      *  Sets up the sensor on port S3 and configures it for ambient light measurement.
+      *  
+      */
     public Light() {
         
         this.colorSensor = new EV3ColorSensor(SensorPort.S3);
@@ -48,6 +59,10 @@ public class Light extends Thread {
         }
     }
 
+    /**
+     * Method for getting the current reflection.
+     * @return {@code sample[0]} (light)
+     */
     public static float getCurrentReflection() {
         light.fetchSample(sample, 0);
         return sample[0];

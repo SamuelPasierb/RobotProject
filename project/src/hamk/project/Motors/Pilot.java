@@ -15,6 +15,14 @@ import hamk.project.Logic.ObstacleAvoidance;
 import hamk.project.Sensors.Light;
 import hamk.project.Sensors.UltraSonic;
 
+/**
+  * <h3>Pilot class for the EV3 motors.</h3>
+  * This class handles the movement and rotating operations. 
+  * <p>
+  * Extends {@link Thread} so it can run without disturbing other more important functions of the robot.
+  * </p>
+  * @author Samuel Pasierb
+  */
 public class Pilot extends Thread {
     
     // Constants
@@ -42,6 +50,15 @@ public class Pilot extends Thread {
     // Avoid direction
     public int left = 1;
 
+    /**
+      * <h3>Constructor to initialize Pilot.</h3>
+      * <ul>
+      * <li>Sets up the motors on A and D ports</li>
+      * <li>Assigning the wheels</li>
+      * <li>Creating an PILOT object</li>
+      * <li>Assigning the atomic values for {@code running}, {@code forward}, {@code avoid}, {@code turning}, {@code avoiding}, {@code avoidThread}</li>
+      * </ul>
+      */
     public Pilot() {
         
         // Motors
@@ -110,51 +127,127 @@ public class Pilot extends Thread {
 
     }
 
-    // Start motors
+    /**
+      * <h3>Start motors</h3>
+      * <p>
+      * Sets {@code running} to {@code true}
+      * </p>
+      */
     public void startMotors() {
         this.running.set(true);
     }
 
-    // Stop motors
+    /**
+      * <h3>Stop motors</h3>
+      * <p>
+      * Sets {@code running} to {@code false}
+      * </p>
+      */
     public void stopMotors() {
         this.running.set(false);
     }
 
-    // Are motors running
+    /**
+     * <h3>Are motors running method.</h3>
+     * @return {@code running} value
+     */
     public boolean motorsRunning() {
         return this.running.get();
     }
 
-    // Go forward
+    /**
+      * <h3>Go forward</h3>
+      * <p>
+      * Sets {@code forward} to {@code true}
+      * </p>
+      */
     public void goForward() {
         this.forward.set(true);
     }
 
-    // Go backward
+    /**
+      * <h3>Go backward</h3>
+      * <p>
+      * Sets {@code forward} to {@code false}
+      * </p>
+      */
     public void goBack() {
         this.forward.set(false);
     }
 
-    // Turn
+    /**
+      * <h3>Turn</h3>
+      * 
+      * @param side - turning side, could be {@code "LEFT"} or {@code "RIGHT"}
+      * 
+      * <p>
+      * Sets {@code turning} to the specific side
+      * </p>
+      */
     public void turn(String side) {
         this.turning.set(side);
     }
 
-    // End turn
+    /**
+      * <h3>End turn</h3>
+      * <p>
+      * Sets {@code turning} to {@code ""} 
+      * </p>
+      * <p>
+      * Resets the {@code turning} value
+      * </p>
+      */
     public void endTurn() {
         this.turning.set("");
     }
 
+    /**
+      * <h3>Avoid obstacle</h3>
+      * <p>
+      * sets {@code avoid} to {@code true} 
+      * </p>
+      */
     public void avoidingObstacle() {
         this.avoiding.set(true);
     }
 
-    // Setting speed
+    /**
+    * <h3>Setting speed</h3>
+    * 
+    * @param leftSpeed  - speed for the left wheel
+    * 
+    * 
+    * @param rightSpeed - speed for the right wheel
+    * 
+    * <p>
+    * Sets {@code setSpeed} value with {@code leftSpeed} and {@code rightSpeed}
+    * </p>
+    * <p>
+    * Also sets {@code update} value to {@code true}
+    * </p>
+    */
     public void setSpeed(float leftSpeed, float rightSpeed) {
         this.setSpeed(leftSpeed, rightSpeed, true);
     }
 
-    // Setting speed
+    /** 
+      * <h3>Setting speed</h3>
+      * 
+      * @param leftSpeed - speed for the left wheel
+      * 
+      * @param rightSpeed - speed for the right wheel
+      * 
+      * @param update - TODO write here smth
+      * 
+      * <p>
+      * Sets speed for the wheels.
+      * </p>
+      * Updates LCD Screen with sum of {@code leftSpeed} and {@code rightSpeed} divided by 2
+      * 
+      * <p>
+      * {@code LCDClass.speed.set("Speed: " + ((leftSpeed + rightSpeed) / 2));}
+      * </p>
+      * */ 
     public void setSpeed(float leftSpeed, float rightSpeed, boolean update) {
         
         if (update) {
@@ -168,17 +261,39 @@ public class Pilot extends Thread {
         rightMotor.setSpeed(rightSpeed);
     }
 
-    // Changing speed by 'speed'
+    /**
+      * <h3>Changing speed by 'speed'</h3>
+      * @param speed - General speed for the motors.
+      * 
+      * <p>
+      * Increases both left and right motors speed If sum of {@code leftSpeed} and {@code speed} and also {@code rightSpeed} and {@code speed} more than 0
+      * </p>
+      * 
+      */
     public void changeSpeedBy(int speed) {
         if (this.leftSpeed + speed > 0 && this.rightSpeed + speed > 0) this.setSpeed(this.leftSpeed + speed, this.rightSpeed + speed);
     }
 
-    // Turn Left
+    /**
+      * <h3>Turn left</h3>
+      * 
+      * Divides {@code leftSpeed} value by 1.4 and multiplies {@code rightSpeed} by 1.4 for the smooth turning left.
+      * <p>
+      * Sets {@code update} value to {@code false}
+      * </p>
+      */
     private void turnLeft() {
         this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f, false);
     }
 
-    // Turn Right
+    /**
+      * <h3>Turn right</h3>
+      * 
+      * Multiplies {@code leftSpeed} value by 1.4 and divides {@code rightSpeed} by 1.4 for the smooth turning right.
+      * <p>
+      * Sets {@code update} value to {@code false}
+      * </p>
+      */
     private void turnRight() {
         this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f, false);
     }
@@ -222,6 +337,17 @@ public class Pilot extends Thread {
 
     // }
 
+    /**
+     * <h3>Avoid an obstacle</h3>
+     * <ul>
+     * <li>Sets the angular speed to 200 and linear speed to 500</li>
+     * <li>Going around, setting up the arc and travel values</li>
+     * <li>Looking for the line, sets linear speed to 75 and going forward until the robot finds the line</li>
+     * <li>Going back a little bit, stopping PILOT and setting an arc</li>
+     * <li>When finishes avoiding, sets {@code avoiding} and {@code avoidThread} values to {@code false}</li>
+     * </ul>
+     * 
+     */
     public void avoid() {
 
         // Speed

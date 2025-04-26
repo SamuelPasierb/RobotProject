@@ -60,6 +60,10 @@ public class Main {
 
     }
 
+    /**
+      * 
+      * @return {@code pilot} value
+      */
     public static Pilot getPilot() {
         return pilot;
     }
