@@ -9,19 +9,20 @@ import lejos.robotics.SampleProvider;
 public class Light extends Thread {
 
     private final EV3ColorSensor colorSensor;
-    private final SampleProvider light;
-    private final float[] sample;
+    private static SampleProvider light;
+    private static float[] sample;
 
     private final float BACKGROUND = 0.3f;
-    private final float BORDER = 0.1f;
+    public static final float BORDER = 0.1f;
 
     //Constructor to initialize the LightSensor with the EV3ColorSensor.
     //Sets up the sensor on port S3 and configures it for ambient light measurement.
     public Light() {
         
         this.colorSensor = new EV3ColorSensor(SensorPort.S3);
-        this.light = colorSensor.getRedMode();
-        this.sample = new float[light.sampleSize()];
+        light = colorSensor.getRedMode();
+        sample = new float[light.sampleSize()];
+
     }
 
     // run a thread
@@ -33,6 +34,7 @@ public class Light extends Thread {
             // Update atomic value
             LCDClass.reflection.set("Reflection: " + (sample[0] * 100.0f) + "%");
 
+            // Follow the line
             if (sample[0] > BACKGROUND) { // RIGHT
                 Main.getPilot().turn("LEFT");
             } else if (sample[0] > BORDER) { // LEFT
@@ -42,8 +44,13 @@ public class Light extends Thread {
             }
 
             // Delay by 20ms
-            // Delay.msDelay(75);
+            // Delay.msDelay(20);
         }
+    }
+
+    public static float getCurrentReflection() {
+        light.fetchSample(sample, 0);
+        return sample[0];
     }
 
 }

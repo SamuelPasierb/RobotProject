@@ -11,19 +11,14 @@ import hamk.project.Logic.ObstacleAvoidance;
 public class UltraSonic extends Thread {
     
     // Variables
-    private final EV3UltrasonicSensor ultraSonicSensor;
-    private final SampleProvider distance;
-    private final float[] sample;
+    private static final EV3UltrasonicSensor ultraSonicSensor = new EV3UltrasonicSensor(SensorPort.S2);
+    public static final SampleProvider distance = ultraSonicSensor.getDistanceMode();
+    public final static float[] sample = new float[distance.sampleSize()];
 
     private final ObstacleAvoidance obstacleAvoidance;
 
     // Constructor
     public UltraSonic() {
-        this.ultraSonicSensor = new EV3UltrasonicSensor(SensorPort.S2);
-
-        this.distance = this.ultraSonicSensor.getDistanceMode();
-        this.sample = new float[this.distance.sampleSize()];
-
         this.obstacleAvoidance = new ObstacleAvoidance();
     }
 
@@ -53,8 +48,13 @@ public class UltraSonic extends Thread {
 
     }
 
-    private float roundToCM(float dist) {
+    private static float roundToCM(float dist) {
         return Math.round(dist * 10_000) / 100.0f;
+    }
+
+    public static float getDistance() {
+        distance.fetchSample(sample, 0);
+        return roundToCM(sample[0]);
     }
 
 }

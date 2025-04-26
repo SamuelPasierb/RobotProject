@@ -28,7 +28,7 @@ public class Main {
 
         // Start threads
         ultraSonic.start();
-        // light.start();
+        light.start();
         lcd.start();
         pilot.start();
 

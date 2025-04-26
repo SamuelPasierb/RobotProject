@@ -3,14 +3,17 @@ package hamk.project.Motors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
+import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
-
+import hamk.project.Main;
 import hamk.project.LCD.LCDClass;
 import hamk.project.Logic.ObstacleAvoidance;
+import hamk.project.Sensors.Light;
+import hamk.project.Sensors.UltraSonic;
 
 public class Pilot extends Thread {
     
@@ -64,8 +67,8 @@ public class Pilot extends Thread {
     @Override
     public void run() {
         
-        this.PILOT.setLinearAcceleration(200);
-        this.PILOT.setAngularAcceleration(200);
+        this.PILOT.setLinearAcceleration(300);
+        this.PILOT.setAngularAcceleration(300);
 
         while (!this.isInterrupted()) {
 
@@ -98,12 +101,6 @@ public class Pilot extends Thread {
                 // TODO: decide whether to go left or right to go inside
                 this.avoidThread.set(true);
                 ObstacleAvoidance.avoidObstacle().start();
-            }
-
-            // Avoidance
-            if (this.avoid.get()) {
-                this.rotate(90);
-                avoid.set(false);
             }
 
             // Delay by 20ms
@@ -176,21 +173,6 @@ public class Pilot extends Thread {
         if (this.leftSpeed + speed > 0 && this.rightSpeed + speed > 0) this.setSpeed(this.leftSpeed + speed, this.rightSpeed + speed);
     }
 
-    // Slow down when obstacle getting close
-    public void slowDown() {
-        if (!this.slowedDown) {
-            this.slowedDown = true;
-            setSpeed(150, 150, true);
-        }
-    }
-
-    public void speedUp() {
-        if (this.slowedDown) {
-            this.slowedDown = false;
-            setSpeed(200, 200, true);
-        }
-    }
-
     // Turn Left
     private void turnLeft() {
         this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f, false);
@@ -201,24 +183,72 @@ public class Pilot extends Thread {
         this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f, false);
     }
 
-    // Rotates robot by 'degrees'
-    public void rotate(int degrees) {
-        this.PILOT.rotate(degrees);
-        this.running.set(true);
-    }
+    // public void avoid() {
+
+    //     this.PILOT.setAngularSpeed(600);
+    //     this.PILOT.setLinearSpeed(600);
+
+    //     this.PILOT.rotate(-90);
+    //     this.PILOT.travel(250);
+    //     this.PILOT.rotate(90);
+    //     int counter = 1;
+
+    //     // Go far enough
+    //     while (UltraSonic.getDistance() < ObstacleAvoidance.AVOID_ZONE + 10 && !Button.ESCAPE.isDown()) {
+    //         this.PILOT.rotate(-90);
+    //         this.PILOT.travel(250);
+    //         this.PILOT.rotate(90);
+    //         counter++;
+    //     }
+
+    //     // Go around
+    //     this.PILOT.travel(250);
+    //     this.PILOT.rotate(90);
+
+    //     // Check if clear
+    //     while (UltraSonic.getDistance() < ObstacleAvoidance.AVOID_ZONE + 10 && !Button.ESCAPE.isDown()) {
+    //         this.PILOT.rotate(-90);
+    //         this.PILOT.travel(250);
+    //         this.PILOT.rotate(90);
+    //     }
+
+    //     // Return to the line
+    //     this.PILOT.travel(200 * counter);
+    //     this.PILOT.rotate(90);
+
+    //     // Finished avoiding
+    //     this.avoidThread.set(false);
+    //     this.avoiding.set(false);
+
+    // }
 
     public void avoid() {
 
         // Speed
         this.PILOT.setAngularSpeed(200);
-        this.PILOT.setLinearSpeed(400);
+        this.PILOT.setLinearSpeed(500);
 
         // Around
         // left is used to determine whether to make an arc to the left or to the right
-        this.PILOT.arc(-250 * this.left, 45);
-        this.PILOT.arc(250 * this.left, 90);
-        this.PILOT.arc(-250 * this.left, 45);
+        this.PILOT.arc(200, 60);
+        this.PILOT.travel(250);
+        this.PILOT.arc(-200, 90);
 
+        this.PILOT.travel(350);
+
+        // Look for the line
+        this.PILOT.setLinearSpeed(75);
+        this.PILOT.forward();
+
+        // Until the robot finds the line
+        while (Light.getCurrentReflection() > Light.BORDER && !Button.ESCAPE.isDown()) {
+            
+        }
+
+        // Go back a little bit
+        this.PILOT.stop();
+        this.PILOT.arc(-35, -30);
+        
         // Finished avoiding
         this.avoidThread.set(false);
         this.avoiding.set(false);
