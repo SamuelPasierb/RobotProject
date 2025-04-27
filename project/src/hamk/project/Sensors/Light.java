@@ -1,10 +1,12 @@
 package hamk.project.Sensors;
 
-import hamk.project.Main;
-import hamk.project.LCD.LCDClass;
+// Imports
 import lejos.hardware.port.SensorPort;
 import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.robotics.SampleProvider;
+
+import hamk.project.LCD.LCDClass;
+import hamk.project.Main;
 
 /**
   * <h3>Class for the Light sensor</h3>
@@ -36,14 +38,25 @@ public class Light extends Thread {
 
     }
 
-    // run a thread
+    /**
+     * <h3>Light Sensor Thread</h3>
+     * <p>The robot is positioned such as the line is on it's left side and the sensors is on the edge of the line</p>
+     * <p>This works, because the place where the black line collides with white background has relefection rate that is in between black and white
+     * <ol>
+     *  <li>Updates light reflection value</li>
+     *  <li>Determies if the robot should: 
+     *      <ul>
+     *          <li>Turn to left (is on the white background and should go towards the line)</li>
+     *          <li>Go straight (is on the edge and therefore doesn't have to turn)</li>
+     *          <li>Turn to right (is completely on the line and should go out of it)</li>
+     *      </ul>
+     *  <li>Updates reflection value for {@link LDCClass}</li>
+     * </ul>
+     */
     @Override
     public void run() {
         while (!this.isInterrupted()) {
             light.fetchSample(sample, 0);
-
-            // Update atomic value
-            LCDClass.reflection.set("Reflection: " + (sample[0] * 100.0f) + "%");
 
             // Follow the line
             if (sample[0] > BACKGROUND) { // RIGHT
@@ -54,8 +67,9 @@ public class Light extends Thread {
                 Main.getPilot().turn("RIGHT");
             }
 
-            // Delay by 20ms
-            // Delay.msDelay(20);
+            // Update atomic value
+            LCDClass.reflection.set("Reflection: " + (sample[0] * 100.0f) + "%");
+
         }
     }
 

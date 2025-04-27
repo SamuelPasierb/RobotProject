@@ -50,6 +50,10 @@ public class LCDClass extends Thread {
     }
 
 
+    /**
+     * <h3>Thread for maintaining LCD.</h3>
+     * <p>Displays different values as distance, reflection rate and speed on the display</p>
+     */
     @Override
     public void run() {
         

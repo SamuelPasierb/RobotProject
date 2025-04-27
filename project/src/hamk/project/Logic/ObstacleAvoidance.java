@@ -1,8 +1,6 @@
 package hamk.project.Logic;
 
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicBoolean;
-
+// Imports
 import hamk.project.Main;
 
 /**
@@ -13,14 +11,16 @@ import hamk.project.Main;
 public class ObstacleAvoidance {
     
     // Robot
-    private final int WIDTH = 10;
-    private final int SAFE_ZONE = 5;
-    private final int FULL_WIDTH = SAFE_ZONE + WIDTH + SAFE_ZONE;
+    // private final int WIDTH = 10;
+    // private final int SAFE_ZONE = 5;
+    // private final int FULL_WIDTH = SAFE_ZONE + WIDTH + SAFE_ZONE;
 
     // Zones
     private final int SCAN_ZONE = 50;
-    public static final int AVOID_ZONE = 35;
-    private final int DEAD_ZONE = 8;
+    public static final int AVOID_ZONE = 30;
+    private final int DEAD_ZONE = 5;
+
+    private long counter = 0;
 
     private final static Runnable runnable = new Runnable() {
         @Override
@@ -37,11 +37,11 @@ public class ObstacleAvoidance {
      * </p>
      * Also If {@code distance} less that {@code AVOID_ZONE} value, then {@code avoidingObstacle()} method will be called.
      * <p>
-     * Robot will speed up if {@code distance} more that {@code AVOID_ZONE} and {@code DEAD_ZONE} values.
+     * Robot will go at his usual speed if {@code distance} is more that {@code AVOID_ZONE} and {@code DEAD_ZONE} values.
      * </p>
      */
     public void avoid(float distance) {
-        
+
         // STOP!
         if (distance < DEAD_ZONE) {
             Main.getPilot().stopMotors();
@@ -49,11 +49,13 @@ public class ObstacleAvoidance {
 
         // Will crash
         else if (distance < AVOID_ZONE) {
-            Main.getPilot().avoidingObstacle();
+            if (this.counter > 1000) Main.getPilot().avoidingObstacle();
+            this.counter++;
         }
 
         // Slow down
         else if (distance < SCAN_ZONE) {
+            this.counter = 0;
             // this.scanning = true;
             // this.middleDist = distance;
             // Main.getPilot().scan();

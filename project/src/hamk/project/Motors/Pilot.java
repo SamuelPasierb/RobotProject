@@ -1,5 +1,6 @@
 package hamk.project.Motors;
 
+// Import 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -9,11 +10,10 @@ import lejos.hardware.port.MotorPort;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
-import hamk.project.Main;
+
 import hamk.project.LCD.LCDClass;
 import hamk.project.Logic.ObstacleAvoidance;
 import hamk.project.Sensors.Light;
-import hamk.project.Sensors.UltraSonic;
 
 /**
   * <h3>Pilot class for the EV3 motors.</h3>
@@ -37,18 +37,13 @@ public class Pilot extends Thread {
     // Speed
     private float leftSpeed = 0;
     private float rightSpeed = 0;
-    private boolean slowedDown = false;
 
     // Atomic values
     private AtomicBoolean running;
     private AtomicBoolean forward;
-    private AtomicBoolean avoid;
     private AtomicBoolean avoiding;
     private AtomicBoolean avoidThread;
     private AtomicReference<String> turning;
-
-    // Avoid direction
-    public int left = 1;
 
     /**
       * <h3>Constructor to initialize Pilot.</h3>
@@ -64,6 +59,9 @@ public class Pilot extends Thread {
         // Motors
         this.leftMotor = new EV3LargeRegulatedMotor(MotorPort.D);
         this.rightMotor = new EV3LargeRegulatedMotor(MotorPort.A);
+        
+        // Motor acceleration
+        this.leftMotor.setAcceleration(400); this.rightMotor.setAcceleration(400);
 
         // Wheels
         this.leftWheel = WheeledChassis.modelWheel(leftMotor, WHEEL_DIAMETER).offset(-WHEELBASE / 2);
@@ -75,12 +73,24 @@ public class Pilot extends Thread {
         // Atomic values
         this.running = new AtomicBoolean(false);
         this.forward = new AtomicBoolean(true);
-        this.avoid = new AtomicBoolean(false);
         this.turning = new AtomicReference<String>("");
         this.avoiding = new AtomicBoolean(false);
         this.avoidThread = new AtomicBoolean(false);
     }
 
+    /**
+     * <h3>Main movement method</h3>
+     * <p>Responsible for keeping robot on the line and avoding obstacles.</p>
+     * <p>Runs infinitely</p>
+     * <h4>Explanation: </h4>
+     * <ol>
+     *  <li>If the robot is currently avoiding an obstacle don't do anything</li>
+     *  <li>If the robot should be running, but is not moving start moving</li>
+     *  <li>If the robot is moving but shouldn't stop him</li>
+     *  <li>If the robot needs to turn make him turn in a wanted direction othewise make him go straight</li>
+     *  <li>If there is an obstacle that needs to be avoided, avoid it</li>
+     * </ol>
+     */
     @Override
     public void run() {
         
@@ -89,8 +99,12 @@ public class Pilot extends Thread {
 
         while (!this.isInterrupted()) {
 
-            // Running
-            if (this.running.get() && !this.PILOT.isMoving() && !this.avoidThread.get()) {
+            if (this.avoidThread.get()) {
+              continue;
+            }
+
+            // Should be running
+            if (this.running.get() && !this.PILOT.isMoving()) {
                 
                 this.setSpeed(this.leftSpeed, this.rightSpeed);
 
@@ -98,24 +112,23 @@ public class Pilot extends Thread {
                 if (this.forward.get()) PILOT.forward();
                 else PILOT.backward();
 
-            } else if (!this.running.get() && this.PILOT.isMoving() && !this.avoid.get()) { // Stop moving
+            } else if (!this.running.get() && this.PILOT.isMoving()) { // Stop moving
                 PILOT.stop();
             }
 
             // Follow line
-            if (!this.turning.get().isEmpty() && !this.avoiding.get() && !this.avoidThread.get()) {
+            if (!this.turning.get().isEmpty() && !this.avoiding.get()) {
                 if (leftMotor.getSpeed() == rightMotor.getSpeed()) {
                     if (this.turning.get().equals("RIGHT")) this.turnRight();
                     else this.turnLeft();
                 }
-            } else if (!this.avoidThread.get()) {
+            } else {
                 this.setSpeed(this.leftSpeed, this.rightSpeed);
             }
 
             // Avoid obstacle
-            if (this.avoiding.get() && !this.avoidThread.get()) {
+            if (this.avoiding.get()) {
                 this.avoiding.set(false);
-                // TODO: decide whether to go left or right to go inside
                 this.avoidThread.set(true);
                 ObstacleAvoidance.avoidObstacle().start();
             }
@@ -234,10 +247,8 @@ public class Pilot extends Thread {
       * <h3>Setting speed</h3>
       * 
       * @param leftSpeed - speed for the left wheel
-      * 
       * @param rightSpeed - speed for the right wheel
-      * 
-      * @param update - TODO write here smth
+      * @param update - whether to update the speed or the value is just temporary (for turning)
       * 
       * <p>
       * Sets speed for the wheels.
@@ -298,52 +309,14 @@ public class Pilot extends Thread {
         this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f, false);
     }
 
-    // public void avoid() {
-
-    //     this.PILOT.setAngularSpeed(600);
-    //     this.PILOT.setLinearSpeed(600);
-
-    //     this.PILOT.rotate(-90);
-    //     this.PILOT.travel(250);
-    //     this.PILOT.rotate(90);
-    //     int counter = 1;
-
-    //     // Go far enough
-    //     while (UltraSonic.getDistance() < ObstacleAvoidance.AVOID_ZONE + 10 && !Button.ESCAPE.isDown()) {
-    //         this.PILOT.rotate(-90);
-    //         this.PILOT.travel(250);
-    //         this.PILOT.rotate(90);
-    //         counter++;
-    //     }
-
-    //     // Go around
-    //     this.PILOT.travel(250);
-    //     this.PILOT.rotate(90);
-
-    //     // Check if clear
-    //     while (UltraSonic.getDistance() < ObstacleAvoidance.AVOID_ZONE + 10 && !Button.ESCAPE.isDown()) {
-    //         this.PILOT.rotate(-90);
-    //         this.PILOT.travel(250);
-    //         this.PILOT.rotate(90);
-    //     }
-
-    //     // Return to the line
-    //     this.PILOT.travel(200 * counter);
-    //     this.PILOT.rotate(90);
-
-    //     // Finished avoiding
-    //     this.avoidThread.set(false);
-    //     this.avoiding.set(false);
-
-    // }
-
+  
     /**
      * <h3>Avoid an obstacle</h3>
      * <ul>
      * <li>Sets the angular speed to 200 and linear speed to 500</li>
-     * <li>Going around, setting up the arc and travel values</li>
+     * <li>Going around, moves in an 60° arc, moves 250mm forward and rotates back towards the line </li>
      * <li>Looking for the line, sets linear speed to 75 and going forward until the robot finds the line</li>
-     * <li>Going back a little bit, stopping PILOT and setting an arc</li>
+     * <li>Going back a little bit, stopping PILOT and rotating back to it's initial position</li>
      * <li>When finishes avoiding, sets {@code avoiding} and {@code avoidThread} values to {@code false}</li>
      * </ul>
      * 
@@ -355,12 +328,13 @@ public class Pilot extends Thread {
         this.PILOT.setLinearSpeed(500);
 
         // Around
-        // left is used to determine whether to make an arc to the left or to the right
+        this.PILOT.travel(-100);
         this.PILOT.arc(200, 60);
-        this.PILOT.travel(250);
-        this.PILOT.arc(-200, 90);
+        this.PILOT.travel(200);
+        this.PILOT.arc(-75, 105);
 
-        this.PILOT.travel(350);
+        // Go back towards the line
+        this.PILOT.travel(200);
 
         // Look for the line
         this.PILOT.setLinearSpeed(75);
@@ -373,7 +347,7 @@ public class Pilot extends Thread {
 
         // Go back a little bit
         this.PILOT.stop();
-        this.PILOT.arc(-35, -30);
+        this.PILOT.arc(-35, -40);
         
         // Finished avoiding
         this.avoidThread.set(false);
