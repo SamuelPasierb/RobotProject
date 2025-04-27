@@ -15,11 +15,11 @@ For this project we are using **Visual Studio Code** as an IDE for programming, 
 ## Team
 
 ||||
-|----------|----------|----------|
-| Smorgulenko **Artjom**   | Nguyen **Anh**   | Pasierb **Samuel**   |
-| Implementation of sensors | | Documented project progress, testing, and integration steps || Robot movement |
-| LCD screen | | Created and maintained Confluence pages for project documentation. | | Obstacle avoidance |
-| Fine-tuning and testing | | Line follower logic |
+| Smorgulenko **Artjom** | Nguyen **Anh** | Pasierb **Samuel** |
+|------------------------|----------------|--------------------|
+| Implementation of sensors | Documented project progress, testing, and integration steps | Robot movement |
+| LCD screen | Created and maintained Confluence pages for project documentation | Obstacle avoidance |
+| Fine-tuning and testing |  | Line follower logic |
 
 ## Timelines
 
