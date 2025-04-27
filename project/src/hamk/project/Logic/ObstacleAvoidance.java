@@ -5,6 +5,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import hamk.project.Main;
 
+/**
+ * <h3>Class of Obstacle avoidance</h3>
+ * This class contains logic for avoiding obstacles.
+ * @author Samuel Pasierb
+ */
 public class ObstacleAvoidance {
     
     // Robot
@@ -22,6 +27,19 @@ public class ObstacleAvoidance {
         public void run() { Main.getPilot().avoid(); }
     };
 
+    /**
+     * <h3>Method for the obstacle avoiding</h3>
+     * @param distance - distance value
+     * 
+     * Contains a {@code DEAD_ZONE} and {@code AVOID_ZONE} values.
+     * <p>
+     * If {@code distance} less that {@code DEAD_ZONE} value, then motors will be stopped.
+     * </p>
+     * Also If {@code distance} less that {@code AVOID_ZONE} value, then {@code avoidingObstacle()} method will be called.
+     * <p>
+     * Robot will speed up if {@code distance} more that {@code AVOID_ZONE} and {@code DEAD_ZONE} values.
+     * </p>
+     */
     public void avoid(float distance) {
         
         // STOP!
@@ -48,7 +66,11 @@ public class ObstacleAvoidance {
 
     }
 
-    // Thread for avoiding obstacle
+    /**
+     * <h3>Thread for avoiding obstacle</h3>
+     * 
+     * @return the value of {@code runnable} thread
+     */
     public static Thread avoidObstacle() {
         return new Thread(runnable);
     }
