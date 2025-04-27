@@ -1,6 +1,9 @@
 package hamk.project.Logic;
 
 // Imports
+import java.util.TimerTask;
+import java.util.Timer;
+
 import hamk.project.Main;
 
 /**
@@ -19,8 +22,6 @@ public class ObstacleAvoidance {
     private final int SCAN_ZONE = 50;
     public static final int AVOID_ZONE = 30;
     private final int DEAD_ZONE = 5;
-
-    private long counter = 0;
 
     private final static Runnable runnable = new Runnable() {
         @Override
@@ -49,16 +50,7 @@ public class ObstacleAvoidance {
 
         // Will crash
         else if (distance < AVOID_ZONE) {
-            if (this.counter > 1000) Main.getPilot().avoidingObstacle();
-            this.counter++;
-        }
-
-        // Slow down
-        else if (distance < SCAN_ZONE) {
-            this.counter = 0;
-            // this.scanning = true;
-            // this.middleDist = distance;
-            // Main.getPilot().scan();
+            Main.getPilot().avoidingObstacle();
         }
 
         // Speed up

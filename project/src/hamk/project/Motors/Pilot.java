@@ -61,7 +61,7 @@ public class Pilot extends Thread {
         this.rightMotor = new EV3LargeRegulatedMotor(MotorPort.A);
         
         // Motor acceleration
-        this.leftMotor.setAcceleration(400); this.rightMotor.setAcceleration(400);
+        this.leftMotor.setAcceleration(100); this.rightMotor.setAcceleration(100);
 
         // Wheels
         this.leftWheel = WheeledChassis.modelWheel(leftMotor, WHEEL_DIAMETER).offset(-WHEELBASE / 2);
@@ -158,6 +158,7 @@ public class Pilot extends Thread {
       */
     public void stopMotors() {
         this.running.set(false);
+        this.leftMotor.setSpeed(0); this.rightMotor.setSpeed(0);
     }
 
     /**
@@ -328,10 +329,9 @@ public class Pilot extends Thread {
         this.PILOT.setLinearSpeed(500);
 
         // Around
-        this.PILOT.travel(-100);
-        this.PILOT.arc(200, 60);
+        this.PILOT.arc(-200, 60);
         this.PILOT.travel(200);
-        this.PILOT.arc(-75, 105);
+        this.PILOT.arc(75, 105);
 
         // Go back towards the line
         this.PILOT.travel(200);
@@ -347,7 +347,7 @@ public class Pilot extends Thread {
 
         // Go back a little bit
         this.PILOT.stop();
-        this.PILOT.arc(-35, -40);
+        this.PILOT.arc(35, -40);
         
         // Finished avoiding
         this.avoidThread.set(false);

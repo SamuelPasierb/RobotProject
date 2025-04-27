@@ -40,15 +40,15 @@ public class Light extends Thread {
 
     /**
      * <h3>Light Sensor Thread</h3>
-     * <p>The robot is positioned such as the line is on it's left side and the sensors is on the edge of the line</p>
+     * <p>The robot is positioned such as the line is on its right side and the sensor is on the edge of the line</p>
      * <p>This works, because the place where the black line collides with white background has relefection rate that is in between black and white
      * <ol>
      *  <li>Updates light reflection value</li>
      *  <li>Determies if the robot should: 
      *      <ul>
-     *          <li>Turn to left (is on the white background and should go towards the line)</li>
+     *          <li>Turn to right (is on the white background and should go towards the line)</li>
      *          <li>Go straight (is on the edge and therefore doesn't have to turn)</li>
-     *          <li>Turn to right (is completely on the line and should go out of it)</li>
+     *          <li>Turn to left (is completely on the line and should go out of it)</li>
      *      </ul>
      *  <li>Updates reflection value for {@link LDCClass}</li>
      * </ul>
@@ -60,11 +60,11 @@ public class Light extends Thread {
 
             // Follow the line
             if (sample[0] > BACKGROUND) { // RIGHT
-                Main.getPilot().turn("LEFT");
-            } else if (sample[0] > BORDER) { // LEFT
-                Main.getPilot().endTurn();
-            } else { // Move normally
                 Main.getPilot().turn("RIGHT");
+            } else if (sample[0] > BORDER) { // STRAIGHT
+                Main.getPilot().endTurn();
+            } else { // LEFT
+                Main.getPilot().turn("LEFT");
             }
 
             // Update atomic value
