@@ -1,9 +1,6 @@
 package hamk.project.Logic;
 
 // Imports
-import java.util.TimerTask;
-import java.util.Timer;
-
 import hamk.project.Main;
 
 /**
@@ -19,7 +16,7 @@ public class ObstacleAvoidance {
     // private final int FULL_WIDTH = SAFE_ZONE + WIDTH + SAFE_ZONE;
 
     // Zones
-    private final int SCAN_ZONE = 50;
+    // private final int SCAN_ZONE = 50;
     public static final int AVOID_ZONE = 30;
     private final int DEAD_ZONE = 5;
 
