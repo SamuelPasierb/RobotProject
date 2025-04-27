@@ -1,13 +1,13 @@
 package hamk.project;
 
-//import from package
+// Imports
+import lejos.utility.Delay;
+import lejos.hardware.Button;
+
 import hamk.project.LCD.LCDClass;
 import hamk.project.Motors.Pilot;
 import hamk.project.Sensors.Light;
 import hamk.project.Sensors.UltraSonic;
-import lejos.hardware.Button;
-
-import lejos.utility.Delay;
 
 public class Main {
 
@@ -23,6 +23,9 @@ public class Main {
         light = new Light();
         lcd = new LCDClass();
         pilot = new Pilot();
+
+        // Wait
+        Button.waitForAnyPress();
 
         // Start threads
         ultraSonic.start();
@@ -46,8 +49,8 @@ public class Main {
                 pilot.changeSpeedBy(-10);
             }
 
-            // Delay by 100ms
-            Delay.msDelay(100);
+            // Delay by 20ms
+            Delay.msDelay(20);
 
         }
     
@@ -58,6 +61,10 @@ public class Main {
 
     }
 
+    /**
+      * 
+      * @return {@code pilot} value
+      */
     public static Pilot getPilot() {
         return pilot;
     }
