@@ -17,6 +17,9 @@ For this project we are using **Visual Studio Code** as an IDE for programming, 
 ||||
 |----------|----------|----------|
 | Smorgulenko **Artjom**   | Nguyen **Anh**   | Pasierb **Samuel**   |
+| Implementation of sensors | | Robot movement |
+| LCD screen | | Obstacle avoidance |
+| Fine-tuning and testing | | Line follower logic |
 
 ## Timelines
 
