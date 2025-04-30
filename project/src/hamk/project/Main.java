@@ -8,6 +8,7 @@ import hamk.project.LCD.LCDClass;
 import hamk.project.Motors.Pilot;
 import hamk.project.Sensors.Light;
 import hamk.project.Sensors.UltraSonic;
+import hamk.project.WebService.ReadData;
 
 public class Main {
 
@@ -15,6 +16,7 @@ public class Main {
     private static Light light;
     private static LCDClass lcd;
     private static Pilot pilot;
+    private static ReadData lego;
 
     public static void main(String[] args) {
 
@@ -23,15 +25,17 @@ public class Main {
         light = new Light();
         lcd = new LCDClass();
         pilot = new Pilot();
+        lego = new ReadData();
 
         // Wait
         Button.waitForAnyPress();
 
         // Start threads
-        ultraSonic.start();
-        light.start();
+        // ultraSonic.start();
+        // light.start();
         lcd.start();
         pilot.start();
+        lego.start();
 
         // Start movement
         pilot.startMotors();
@@ -58,6 +62,7 @@ public class Main {
         light.interrupt();
         lcd.interrupt();
         pilot.interrupt();
+        lego.interrupt();
 
     }
 

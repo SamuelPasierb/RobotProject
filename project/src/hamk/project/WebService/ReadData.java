@@ -20,10 +20,14 @@ public class ReadData extends Thread {
 
     String s=null;
 
+    public ReadData() {
+        
+    }
+
     @Override
     public void run() {
 
-        while (!Button.ESCAPE.isDown()) {
+        while (!this.isInterrupted()) {
 
             try {
 				Thread.sleep(100);
@@ -32,13 +36,14 @@ public class ReadData extends Thread {
 			}
 
             try { 
-                url = new URL("http://localhost:8080/lego/rest/lego/get");
+                url = new URL("http://172.31.164.138:8080/lego/rest/lego/get");
                 conn = (HttpURLConnection) url.openConnection();
                 InputStream is = null;
                 try {
                     is = conn.getInputStream();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    System.out.println("here");
                 }
                 isr = new InputStreamReader(is);
                 br = new BufferedReader(isr);
@@ -52,8 +57,6 @@ public class ReadData extends Thread {
 				isr.close();
 				is.close();
 				conn.disconnect();
-
-                System.out.println(br.readLine());
             } catch (Exception e) {
                 e.printStackTrace();
             }

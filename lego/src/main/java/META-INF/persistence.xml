@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	
+	<persistence-unit name="lego">
+	<class>data.RobotValues</class>
+		
+<!-- If using MySQL 5.7 -->
+<!--  
+	as a root user give a command
+	use performance_schema; 
+	GRANT SELECT ON performance_schema.session_variables TO pena@localhost;
+	
+	Change pena to the username you are using below in the property jdbc.user.
+	 -->		
+		
+<!--  jdbcDriver == class, where in the implementation of database functions--> 
+<!--  jdbcUrl == address to the database--> 
+<!--  jdbcUser == user name to the database--> 
+<!--  jdbcPassword == password of the database user--> 
+<!--  ddlGeneration == database tables will be created, if they do not exist--> 
+    <properties>
+	    <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+	    <property name="javax.persistence.jdbc.url" value="jdbc:mysql://172.18.0.1:6033/lego" />
+	    <property name="javax.persistence.jdbc.user" value="root" />
+	    <property name="javax.persistence.jdbc.password" value="password" />
+        <property name="eclipselink.ddl-generation" value="create-tables" />
+	</properties>
+	
+	</persistence-unit>
+</persistence>
