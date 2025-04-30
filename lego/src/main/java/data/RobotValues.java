@@ -18,8 +18,14 @@ public class RobotValues {
     private final int MAX_SPEED = 500;
     private final int MIN_SPEED = 0;
 
-    public RobotValues(int speed, int turning) {
+    public RobotValues() {
         super();
+    }
+
+    public RobotValues(int speed, int turn) {
+        super();
+        this.speed = speed;
+        this.turn = turn;
     }
 
     public int getId() {
