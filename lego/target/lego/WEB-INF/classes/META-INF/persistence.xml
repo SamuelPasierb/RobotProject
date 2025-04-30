@@ -12,8 +12,8 @@
 	use performance_schema; 
 	GRANT SELECT ON performance_schema.session_variables TO pena@localhost;
 	
-	Change pena to the username you are using below in the property jdbc.user.
-	 -->		
+	Change pena to the username you are using below in the property jdbc.user. 
+-->		
 		
 <!--  jdbcDriver == class, where in the implementation of database functions--> 
 <!--  jdbcUrl == address to the database--> 
@@ -21,10 +21,10 @@
 <!--  jdbcPassword == password of the database user--> 
 <!--  ddlGeneration == database tables will be created, if they do not exist--> 
     <properties>
-	    <property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
-	    <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:6033/lego" />
-	    <property name="javax.persistence.jdbc.user" value="root" />
-	    <property name="javax.persistence.jdbc.password" value="password" />
+		<property name="javax.persistence.jdbc.driver" value="com.mysql.jdbc.Driver"/>
+		<property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:6033/lego" />
+		<property name="javax.persistence.jdbc.user" value="root" />
+		<property name="javax.persistence.jdbc.password" value="password" />
         <property name="eclipselink.ddl-generation" value="create-tables" />
 	</properties>
 	

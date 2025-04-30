@@ -17,13 +17,5 @@
             </li>
         </ul>
 
-        <h2>Fill in - this form uses FormParameters</h2>
-        <form action="./rest/lego/addrobot" method='post'>
-        Breed: <input id='speed' type='text' name='speed' value='' placeholder='New prey speed'><br>
-        Weight: <input id='turn' type='text' name='turn' value='' placeholder='turn in kilos'><br>
-        <input type='submit' name='ok' value='Send'><br>
-        </form>
-
-
     </body>
 </html>

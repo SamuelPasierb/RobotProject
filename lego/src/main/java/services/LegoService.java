@@ -1,19 +1,16 @@
 package services;
 
+// Imports
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-
 import data.RobotValues;
-
+import data.Turn;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
@@ -21,7 +18,8 @@ import jakarta.ws.rs.core.Response.ResponseBuilder;
 @Path("/lego")
 public class LegoService {
 
-    RobotValues robotValues = new RobotValues(0, 0);
+    RobotValues robotValues = new RobotValues(0, Turn.STRAIGHT);
+    DatabaseService database = new DatabaseService();
 
 	@Path("/get")
 	@GET
@@ -51,7 +49,7 @@ public class LegoService {
     @POST
     @Produces(MediaType.TEXT_PLAIN)
     public String turnLeft() {
-        robotValues.setTurn("LEFT");
+        robotValues.setTurn(Turn.LEFT);
         return "Dir: " + robotValues.getTurn();
     }
 
@@ -59,7 +57,7 @@ public class LegoService {
     @POST
     @Produces(MediaType.APPLICATION_JSON)
     public String turnRight() {
-        robotValues.setTurn("RIGHT");
+        robotValues.setTurn(Turn.RIGHT);
         return "Dir: " + robotValues.getTurn();
     }
 
@@ -68,28 +66,15 @@ public class LegoService {
 	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<RobotValues> readAllPrey() {
-	//Create an EntityManagerFactory with the settings from persistence.xml file
-		EntityManagerFactory emf=Persistence.createEntityManagerFactory("lego");
-		//And then EntityManager, which can manage the entities.
-		EntityManager em=emf.createEntityManager();
-		
-		//Read all the rows from table prey. Here the Prey must start with capital, 
-		//because class's name starts. This returns a List of Prey objects.
-		List<RobotValues> list=em.createQuery("select a from RobotValues a").getResultList();
+        List<RobotValues> list = database.load("select a from RobotValues a");
 		return list;
 	}
 
-    @POST
-	@Path("/addrobot")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public RobotValues postPreyByParams(@FormParam("speed") int speed, @FormParam("turning") int turning) {
-		RobotValues lego=new RobotValues(speed, turning);
-		EntityManagerFactory emf=Persistence.createEntityManagerFactory("lego");
-		EntityManager em=emf.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(lego);
-		em.getTransaction().commit();
-		return lego;
+    @GET
+	@Path("/save")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public void postPreyByParams(@QueryParam("speed") int speed, @QueryParam("turn") String turn) {
+        RobotValues robot = new RobotValues(speed, Turn.valueOf(turn.toUpperCase()));
+		database.save(robot);
 	}
 }
