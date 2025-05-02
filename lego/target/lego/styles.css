@@ -1,8 +1,14 @@
 body {
-    width: 80%;
-    margin: 10px auto;
+    width: 100%;
+    margin: 10px 0;
     text-align: center;
     background-color: #222222;
+    display: flex;
+    flex-direction: row;
+}
+
+#left, #right {
+    flex: 1;
 }
 
 h1 {
@@ -32,4 +38,34 @@ input {
     background-color: white;
     border-radius: 20px;
     box-shadow: 3px 3px rgba(255, 255, 255, 0.3);
+}
+
+.objects {
+    display: flex;
+}
+
+.object {
+    flex: 1;
+    width: 45%;
+    margin: 25px;
+} 
+
+.object-title {
+    color: white;
+    font-size: 30px;
+    margin-top: 75px;
+    text-align: center;
+}
+
+/* Speedometer */
+#speedometer {
+    position: relative;
+}
+
+#speed {
+    color: white;
+    font-size: 2em;
+    position: absolute;
+    margin: 150px auto;
+    width: 350px;
 }

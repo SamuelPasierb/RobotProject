@@ -45,4 +45,17 @@ public class DatabaseService {
         return em.createQuery(query).getResultList();
     }
 
+    /**
+     * Loads the data from the Database
+     * 
+     * @param query {@code MySQL} query that you want to load
+     * @param count How many entries you want to load
+     * @return {@link List} of {@link RobotValues} from the Database
+     */
+    @SuppressWarnings("unchecked")
+    public final List<RobotValues> load(String query, int count) {
+        return em.createQuery(query).setMaxResults(count).getResultList();
+    }
+
+
 }

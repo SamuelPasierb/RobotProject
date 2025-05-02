@@ -169,6 +169,12 @@
     <version>0.9.1-beta</version>
 </dependency>
 
+<dependency>
+  <groupId>org.openjdk.nashorn</groupId>
+  <artifactId>nashorn-core</artifactId>
+  <version>15.1</version>
+</dependency>
+
   </dependencies>
 
   <build>

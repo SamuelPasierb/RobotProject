@@ -11,15 +11,21 @@ public class RobotValues {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    private int speed;
-    private String turn;
-    private boolean run = true;
+    @SuppressWarnings("unused")
+    private int speed = 0;
+    @SuppressWarnings("unused")
+    private String turn = "Straight";
+    
+    private static int _speed = 0;
+    private static Turn _turn = Turn.STRAIGHT;
 
-    private final int MAX_SPEED = 500;
-    private final int MIN_SPEED = 0;
+    private final static int MAX_SPEED = 500;
+    private final static int MIN_SPEED = 0;
 
     public RobotValues() {
         super();
+        this.speed = _speed;
+        this.turn = _turn.name;
     }
 
     public RobotValues(int speed, Turn turn) {
@@ -36,39 +42,31 @@ public class RobotValues {
         this.id = id;
     }
 
-    public int getSpeed() {
-        return speed;
+    public static int getSpeed() {
+        return _speed;
     }
 
-    public boolean setSpeed(int speed) {
+    public static boolean setSpeed(int speed) {
         
         // Can't use this speed
         if (speed < MIN_SPEED || speed > MAX_SPEED) {
             return false;
         }
         
-        this.speed = speed;
+        _speed = speed;
         return true;
     }
 
-    public String getTurn() {
-        return turn;
+    public static Turn getTurn() {
+        return _turn;
     }
 
-    public void setTurn(Turn turn) {
-        this.turn = turn.name;
+    public static void setTurn(Turn turn) {
+        _turn = turn;
     }
 
-    public boolean isRunning() {
-        return run;
-    }
-
-    public void setRun(boolean run) {
-        this.run = run;
-    }
-
-    public String stringify() {
-        return this.speed + "#" + Turn.valueOf(this.turn).value;
+    public static String stringify() {
+        return _speed + "#" + _turn.value;
     } 
 
 }
