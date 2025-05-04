@@ -42,6 +42,12 @@
                     <form action="./rest/lego/turn/left" method="POST"><input type="submit" name="turnleft" value="TURN LEFT"></form>
                     <form action="./rest/lego/turn/right" method="POST"><input type="submit" name="turnright" value="TURN RIGHT"></form>
                 </li>
+                <li>
+                    <!-- TODO: sync this with speedo and slider -->
+                    <h3>Set Speed Manually</h3>
+                    <form action="./rest/lego/setspeed" method="POST"><input id="setspeed" type="text" name="setspeed" value=""><input type="submit" name="ok" value="Send">
+                    </form>
+                </li>
             </ul>
         </div>
     </body>
