@@ -17,6 +17,10 @@ h1 {
     font-size: 50px;
 }
 
+h3 {
+    color: white;
+}
+
 ul {
     padding: 0;
     list-style: none;

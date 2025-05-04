@@ -28,6 +28,11 @@ public class RobotValues {
         this.turn = _turn.name;
     }
 
+    public RobotValues(int speed) {
+        super();
+        this.speed = speed;
+    }
+
     public RobotValues(int speed, Turn turn) {
         super();
         this.speed = speed;

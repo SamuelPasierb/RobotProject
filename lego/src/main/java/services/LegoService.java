@@ -7,11 +7,15 @@ import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Persistence;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Consumes;
+import jakarta.ws.rs.FormParam;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Produces;
@@ -110,6 +114,29 @@ public class LegoService {
             engine.eval("var PIE = document.getElementById(\"#speedomter\")");
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @POST
+	@Path("/setspeed")
+	@Produces(MediaType.APPLICATION_JSON)
+	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	public RobotValues postValues(@FormParam("setspeed") int speed) {
+		RobotValues lego=new RobotValues(speed);
+		EntityManagerFactory emf=Persistence.createEntityManagerFactory("lego");
+		EntityManager em=emf.createEntityManager();
+		em.getTransaction().begin();
+		em.persist(lego);
+		em.getTransaction().commit();
+		return lego;
+	}
+
+    @Path("/setspeed")
+    @POST
+    public void setSpeed(@FormParam("setspeed") int speed) {
+        if (speed >= 0 && speed <= 500) {
+            RobotValues robot = new RobotValues(speed);
+            database.save(robot);
         }
     }
         
