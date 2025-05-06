@@ -17,25 +17,21 @@ import hamk.project.Main;
   * @author Artjom Smorgulenko, Samuel Pasierb
   */
 public class Light extends Thread {
-
-    private final EV3ColorSensor colorSensor;
-    private static SampleProvider light;
+    
+    private static EV3ColorSensor colorSensor = new EV3ColorSensor(SensorPort.S3);
+    private static SampleProvider light = colorSensor.getRedMode();
     private static float[] sample;
 
     private final float BACKGROUND = 0.3f;
     public static final float BORDER = 0.1f;
-
+    
     /**
       *  <h3>Constructor to initialize the LightSensor with the EV3ColorSensor.</h3>
       *  Sets up the sensor on port S3 and configures it for ambient light measurement.
       *  
       */
-    public Light() {
-        
-        this.colorSensor = new EV3ColorSensor(SensorPort.S3);
-        light = colorSensor.getRedMode();
+    public Light() {        
         sample = new float[light.sampleSize()];
-
     }
 
     /**
@@ -70,7 +66,12 @@ public class Light extends Thread {
             // Update atomic value
             LCDClass.reflection.set("Reflection: " + (sample[0] * 100.0f) + "%");
 
-        }
+            if (this.isInterrupted()) {
+                Main.getPilot().endTurn();
+                LCDClass.reflection.set("");
+            }
+
+        }   
     }
 
     /**

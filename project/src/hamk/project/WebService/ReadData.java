@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import hamk.project.Main;
+import hamk.project.Sensors.UltraSonic;
 
 public class ReadData extends Thread {
 
@@ -27,6 +28,7 @@ public class ReadData extends Thread {
     public ReadData() {
         try {
             url = new URI("http://172.31.164.138:8080/lego/rest/lego/get").toURL();
+            // url = new URI("http://172.31.164.138:8080/lego/rest/lego/save?speed=50&turn=Right&reflection=10&distance=51.2").toURL();
         } catch (MalformedURLException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -78,6 +80,9 @@ public class ReadData extends Thread {
             while ((s = bufferedReader.readLine()) != null){
                 String [] values=s.split("#");
                 int speed = Integer.parseInt(values[0]);
+                boolean light = Boolean.parseBoolean(values[2]);
+                float avoid = Float.parseFloat(values[3]);
+                Main.lineFollowerSwitch(light);
                 Main.getPilot().setSpeed(speed, speed, true);
             }
 

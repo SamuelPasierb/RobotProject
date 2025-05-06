@@ -3,17 +3,27 @@ package hamk.project.WebService;
 // Imports
 import java.net.URI;
 import java.net.URL;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+
+import hamk.project.Main;
 
 public class WriteData extends Thread {
     
-    // Ulr
-    private String urlString;
+    // URL
+    private final String baseURL;
+
+    private HttpURLConnection conn;
+    private InputStreamReader inputStreamReader = null;
+	private BufferedReader bufferedReader = null;
 
     /**
      * Thread used for writing the data to the database using {@code http://localhost:8080/lego/rest/lego/save}.
      */
     public WriteData() {
-        this.urlString = "http://localhost:8080/lego/rest/lego/save";
+        this.baseURL = "http://172.31.164.138:8080/lego/rest/lego/save";
     }
 
     /**
@@ -24,15 +34,15 @@ public class WriteData extends Thread {
         
         while (!this.isInterrupted()) {
 
+            // Save data
+            save();
+
             // 1s delay
             try {
-				Thread.sleep(1000);
+				Thread.sleep(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-
-            // Save data
-            save();
 
         }
         
@@ -45,12 +55,28 @@ public class WriteData extends Thread {
     private void save() {
 
         // Query
-        this.urlString += this.createQuery();
+        String urlString = baseURL + this.createQuery();
 
         // Establish connection and send data
         try {
-            URL url = new URI(this.urlString).toURL();
-            url.openConnection();
+            URL url = new URI(urlString).toURL();
+            conn = (HttpURLConnection) url.openConnection();
+            InputStream inputStream = null;
+
+            try {
+                inputStream = conn.getInputStream();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            inputStreamReader = new InputStreamReader(inputStream);
+            bufferedReader = new BufferedReader(inputStreamReader);
+
+            // Close
+            bufferedReader.close();
+            inputStreamReader.close();
+            inputStream.close();
+            conn.disconnect();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -67,7 +93,7 @@ public class WriteData extends Thread {
         String query = "?";
 
         // TODO: Get all the important information here
-        query += "speed=50&turn=1";
+        query += "speed=50&turn=Straight&" + Main.values();
 
         // Return
         return query;
