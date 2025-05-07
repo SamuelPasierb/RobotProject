@@ -92,7 +92,7 @@ public class RobotValues {
     }
 
     public static String stringify() {
-        return _speed + "#" + _turn.value + "#" + _lightFollower + "#" + _avoid;
+        return _speed + "#" + _turn.value + "#" + _lightFollower;
     } 
 
     

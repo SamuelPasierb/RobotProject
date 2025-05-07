@@ -63,6 +63,9 @@ public class Pilot extends Thread {
         // Motor acceleration
         this.leftMotor.setAcceleration(100); this.rightMotor.setAcceleration(100);
 
+        // Synchonize the motors
+        this.leftMotor.startSynchronization(); this.rightMotor.startSynchronization();
+
         // Wheels
         this.leftWheel = WheeledChassis.modelWheel(leftMotor, WHEEL_DIAMETER).offset(-WHEELBASE / 2);
         this.rightWheel = WheeledChassis.modelWheel(rightMotor, WHEEL_DIAMETER).offset(WHEELBASE / 2); 
@@ -82,64 +85,22 @@ public class Pilot extends Thread {
      * <h3>Main movement method</h3>
      * <p>Responsible for keeping robot on the line and avoding obstacles.</p>
      * <p>Runs infinitely</p>
-     * <h4>Explanation: </h4>
-     * <ol>
-     *  <li>If the robot is currently avoiding an obstacle don't do anything</li>
-     *  <li>If the robot should be running, but is not moving start moving</li>
-     *  <li>If the robot is moving but shouldn't stop him</li>
-     *  <li>If the robot needs to turn make him turn in a wanted direction othewise make him go straight</li>
-     *  <li>If there is an obstacle that needs to be avoided, avoid it</li>
-     * </ol>
      */
     @Override
     public void run() {
-        
-        this.PILOT.setLinearAcceleration(300);
-        this.PILOT.setAngularAcceleration(300);
 
         while (!this.isInterrupted()) {
 
-            if (this.avoidThread.get()) {
-              continue;
-            }
-
-            // Should be running
-            if (this.running.get() && !this.PILOT.isMoving()) {
-                
-                this.setSpeed(this.leftSpeed, this.rightSpeed);
-
-                // Forward || Backward
-                if (this.forward.get()) PILOT.forward();
-                else PILOT.backward();
-
-            } else if (!this.running.get() && this.PILOT.isMoving()) { // Stop moving
-                PILOT.stop();
-            }
-
-            // Follow line
-            if (!this.turning.get().isEmpty() && !this.avoiding.get()) {
-                if (leftMotor.getSpeed() == rightMotor.getSpeed()) {
-                    if (this.turning.get().equals("RIGHT")) this.turnRight();
-                    else this.turnLeft();
-                }
-            } else {
-                this.setSpeed(this.leftSpeed, this.rightSpeed);
-            }
-
-            // Avoid obstacle
-            if (this.avoiding.get()) {
-                this.avoiding.set(false);
-                this.avoidThread.set(true);
-                ObstacleAvoidance.avoidObstacle().start();
-            }
-
-            // Delay by 20ms
-            // Delay.msDelay(20);
+            // Decides wheter go turn or go straight
+            if (!this.turning.get().isEmpty()) {
+                if (this.turning.get().equals("LEFT")) this.turnLeft();
+                else this.turnRight();
+            } else this.goStraight();
 
         }
 
     }
-
+    
     /**
       * <h3>Start motors</h3>
       * <p>
@@ -148,6 +109,8 @@ public class Pilot extends Thread {
       */
     public void startMotors() {
         this.running.set(true);
+        this.leftMotor.forward();
+        this.rightMotor.forward();
     }
 
     /**
@@ -158,45 +121,53 @@ public class Pilot extends Thread {
       */
     public void stopMotors() {
         this.running.set(false);
-        this.leftMotor.setSpeed(0); this.rightMotor.setSpeed(0);
+        this.leftMotor.stop();
+        this.rightMotor.stop();
     }
 
+
     /**
-     * <h3>Are motors running method.</h3>
-     * @return {@code running} value
+     * <h3>Update speed</h3>
+     * Updates the speed to {@code speed}
+     * 
+     * @param speed New speed
      */
-    public boolean motorsRunning() {
-        return this.running.get();
+    public void updateSpeed(int speed) {
+        
+        // Update the speed
+        this.leftSpeed = speed;
+        this.rightSpeed = speed;
     }
 
-    /**
-      * <h3>Go forward</h3>
-      * <p>
-      * Sets {@code forward} to {@code true}
-      * </p>
-      */
-    public void goForward() {
-        this.forward.set(true);
-    }
+    /** 
+      * <h3>Setting speed</h3>
+      * Sets the speed for the wheels.
+      * Updates LCD Screen 
+      *
+      * @param leftSpeed - speed for the left wheel
+      * @param rightSpeed - speed for the right wheel
+      */ 
+    public void setSpeed(float leftSpeed, float rightSpeed) {
+        
+        // Determine wheter the motors need to be started
+        boolean needToStart = this.leftMotor.getSpeed() == 0 || this.rightMotor.getSpeed() == 0;
+        
+        // Change speed
+        this.leftMotor.setSpeed(leftSpeed);
+        this.rightMotor.setSpeed(rightSpeed);
 
-    /**
-      * <h3>Go backward</h3>
-      * <p>
-      * Sets {@code forward} to {@code false}
-      * </p>
-      */
-    public void goBack() {
-        this.forward.set(false);
+        // Start motors if they need to be started
+        if (needToStart) this.startMotors();
+
+        // Update lcd
+        LCDClass.speed.set("Speed: " + ((int) (leftSpeed + rightSpeed) / 2));
     }
 
     /**
       * <h3>Turn</h3>
-      * 
-      * @param side - turning side, could be {@code "LEFT"} or {@code "RIGHT"}
-      * 
-      * <p>
       * Sets {@code turning} to the specific side
-      * </p>
+      *
+      * @param side - turning side, could be {@code "LEFT"} or {@code "RIGHT"}
       */
     public void turn(String side) {
         this.turning.set(side);
@@ -204,112 +175,47 @@ public class Pilot extends Thread {
 
     /**
       * <h3>End turn</h3>
-      * <p>
-      * Sets {@code turning} to {@code ""} 
-      * </p>
-      * <p>
       * Resets the {@code turning} value
-      * </p>
       */
     public void endTurn() {
         this.turning.set("");
     }
 
     /**
+      * <h3>Turn left</h3>
+      * Makes the robot turn left
+      */
+    private void turnLeft() {
+        this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f);
+    }
+
+    /**
+      * <h3>Turn right</h3>
+      * Makes the robot turn right
+      */
+    private void turnRight() {
+        this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f);
+    }
+
+    /**
+     * <h3>Go straight</h3>
+     * Makes the robot go straight
+     */
+    private void goStraight() {
+        this.setSpeed(this.leftSpeed, this.rightSpeed);
+    }
+
+
+    
+    /**
       * <h3>Avoid obstacle</h3>
       * <p>
       * sets {@code avoid} to {@code true} 
       * </p>
       */
-    public void avoidingObstacle() {
+      public void avoidingObstacle() {
         this.avoiding.set(true);
     }
-
-    /**
-    * <h3>Setting speed</h3>
-    * 
-    * @param leftSpeed  - speed for the left wheel
-    * 
-    * 
-    * @param rightSpeed - speed for the right wheel
-    * 
-    * <p>
-    * Sets {@code setSpeed} value with {@code leftSpeed} and {@code rightSpeed}
-    * </p>
-    * <p>
-    * Also sets {@code update} value to {@code true}
-    * </p>
-    */
-    public void setSpeed(float leftSpeed, float rightSpeed) {
-        this.setSpeed(leftSpeed, rightSpeed, true);
-    }
-
-    /** 
-      * <h3>Setting speed</h3>
-      * 
-      * @param leftSpeed - speed for the left wheel
-      * @param rightSpeed - speed for the right wheel
-      * @param update - whether to update the speed or the value is just temporary (for turning)
-      * 
-      * <p>
-      * Sets speed for the wheels.
-      * </p>
-      * Updates LCD Screen with sum of {@code leftSpeed} and {@code rightSpeed} divided by 2
-      * 
-      * <p>
-      * {@code LCDClass.speed.set("Speed: " + ((leftSpeed + rightSpeed) / 2));}
-      * </p>
-      * */ 
-    public void setSpeed(float leftSpeed, float rightSpeed, boolean update) {
-        
-        if (update) {
-            this.leftSpeed = leftSpeed;
-            this.rightSpeed = rightSpeed;
-        }
-
-        LCDClass.speed.set("Speed: " + ((int) (leftSpeed + rightSpeed) / 2));
-        
-        leftMotor.setSpeed(leftSpeed);
-        rightMotor.setSpeed(rightSpeed);
-    }
-
-    /**
-      * <h3>Changing speed by 'speed'</h3>
-      * @param speed - General speed for the motors.
-      * 
-      * <p>
-      * Increases both left and right motors speed If sum of {@code leftSpeed} and {@code speed} and also {@code rightSpeed} and {@code speed} more than 0
-      * </p>
-      * 
-      */
-    public void changeSpeedBy(int speed) {
-        if (this.leftSpeed + speed > 0 && this.rightSpeed + speed > 0) this.setSpeed(this.leftSpeed + speed, this.rightSpeed + speed);
-    }
-
-    /**
-      * <h3>Turn left</h3>
-      * 
-      * Divides {@code leftSpeed} value by 1.4 and multiplies {@code rightSpeed} by 1.4 for the smooth turning left.
-      * <p>
-      * Sets {@code update} value to {@code false}
-      * </p>
-      */
-    private void turnLeft() {
-        this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f, false);
-    }
-
-    /**
-      * <h3>Turn right</h3>
-      * 
-      * Multiplies {@code leftSpeed} value by 1.4 and divides {@code rightSpeed} by 1.4 for the smooth turning right.
-      * <p>
-      * Sets {@code update} value to {@code false}
-      * </p>
-      */
-    private void turnRight() {
-        this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f, false);
-    }
-
   
     /**
      * <h3>Avoid an obstacle</h3>

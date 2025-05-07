@@ -52,7 +52,7 @@ function calculateSpeed(wheelPower) {
 
 }
 
-SPEED_RANGE.oninput = function () {
+SPEED_RANGE.onchange = function () {
     
     // Calculate speed
     calculateSpeed(this.value);

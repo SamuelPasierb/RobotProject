@@ -11,24 +11,25 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import hamk.project.Main;
-import hamk.project.Sensors.UltraSonic;
 
 public class ReadData extends Thread {
+
+    private final String IP;
 
 	private URL url = null;
 	private HttpURLConnection conn = null;
 	private InputStreamReader inputStreamReader = null;
 	private BufferedReader bufferedReader = null;
 
-    String s=null;
+    String s = null;
 
     /**
      * Thread for reading data from the web service from {@code http://172.31.164.138:8080/lego/rest/lego/get}
      */
     public ReadData() {
+        this.IP = "192.168.0.15"; //"172.31.164.138";
         try {
-            url = new URI("http://172.31.164.138:8080/lego/rest/lego/get").toURL();
-            // url = new URI("http://172.31.164.138:8080/lego/rest/lego/save?speed=50&turn=Right&reflection=10&distance=51.2").toURL();
+            url = new URI("http://" + IP + ":8080/lego/rest/lego/get").toURL();
         } catch (MalformedURLException | URISyntaxException e) {
             e.printStackTrace();
         }
@@ -78,12 +79,12 @@ public class ReadData extends Thread {
 
             // Read data
             while ((s = bufferedReader.readLine()) != null){
-                String [] values=s.split("#");
-                int speed = Integer.parseInt(values[0]);
-                boolean light = Boolean.parseBoolean(values[2]);
-                float avoid = Float.parseFloat(values[3]);
-                Main.lineFollowerSwitch(light);
-                Main.getPilot().setSpeed(speed, speed, true);
+                String [] values = s.split("#");
+                // Speed
+                Main.getPilot().updateSpeed(Integer.parseInt(values[0]));
+                
+                // Line follower
+                Main.lineFollowerSwitch(Boolean.parseBoolean(values[2]));
             }
 
             // Close

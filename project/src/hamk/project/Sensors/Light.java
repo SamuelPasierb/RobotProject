@@ -24,6 +24,8 @@ public class Light extends Thread {
 
     private final float BACKGROUND = 0.3f;
     public static final float BORDER = 0.1f;
+
+    public boolean followerOn = false;
     
     /**
       *  <h3>Constructor to initialize the LightSensor with the EV3ColorSensor.</h3>
@@ -52,24 +54,25 @@ public class Light extends Thread {
     @Override
     public void run() {
         while (!this.isInterrupted()) {
+
+            // New data
             light.fetchSample(sample, 0);
 
             // Follow the line
-            if (sample[0] > BACKGROUND) { // RIGHT
-                Main.getPilot().turn("RIGHT");
-            } else if (sample[0] > BORDER) { // STRAIGHT
+            if (this.followerOn) {
+                if (sample[0] > BACKGROUND) { // RIGHT
+                    Main.getPilot().turn("RIGHT");
+                } else if (sample[0] > BORDER) { // STRAIGHT
+                    Main.getPilot().endTurn();
+                } else { // LEFT
+                    Main.getPilot().turn("LEFT");
+                }
+            } else {
                 Main.getPilot().endTurn();
-            } else { // LEFT
-                Main.getPilot().turn("LEFT");
             }
 
             // Update atomic value
             LCDClass.reflection.set("Reflection: " + (sample[0] * 100.0f) + "%");
-
-            if (this.isInterrupted()) {
-                Main.getPilot().endTurn();
-                LCDClass.reflection.set("");
-            }
 
         }   
     }
