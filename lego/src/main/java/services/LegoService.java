@@ -3,15 +3,6 @@ package services;
 // Imports
 import java.util.List;
 import java.util.Random;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Persistence;
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
 
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Consumes;
@@ -112,7 +103,11 @@ public class LegoService {
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_JSON)
 	public void saveByParams(@QueryParam("speed") int speed, @QueryParam("turn") String turn, @QueryParam("reflection") float reflection, @QueryParam("distance") float distance) {
-        RobotValues robot = new RobotValues(speed, Turn.valueOf(turn.toUpperCase()), RobotValues.getLight(), distance);
+        RobotValues.setSpeed(speed);
+        RobotValues.setTurn(Turn.valueOf(turn.toUpperCase()));
+        RobotValues.setDistance(distance);
+        RobotValues.setReflection(reflection);
+        RobotValues robot = new RobotValues();
 		database.save(robot);
 	}
 
@@ -154,7 +149,7 @@ public class LegoService {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String getCurrentData() {
-        int n = new Random().nextInt();
-        return "<h1>" + n + "</h1>";
+        RobotValues robot = new RobotValues();
+        return "<h1>" + robot.toString() + "</h1>";
     }
 }

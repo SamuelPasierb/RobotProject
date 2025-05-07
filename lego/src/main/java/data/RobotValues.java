@@ -11,18 +11,17 @@ public class RobotValues {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    @SuppressWarnings("unused")
-    private int speed = 0;
-    @SuppressWarnings("unused")
-    private String turn = "Straight";
-    @SuppressWarnings("unused")
-    private boolean lightFollower = false;
-    private float avoid;
+    @SuppressWarnings("unused") private int speed = 0;
+    @SuppressWarnings("unused") private String turn = "Straight";
+    @SuppressWarnings("unused") private boolean lightFollower = false;
+    @SuppressWarnings("unused") private float distance;
+    @SuppressWarnings("unused") private float reflection;
     
     private static int _speed = 0;
     private static Turn _turn = Turn.STRAIGHT;
     private static boolean _lightFollower = false;
-    private static float _avoid;
+    private static float _distance;
+    private static float _reflection;
 
     private final static int MAX_SPEED = 500;
     private final static int MIN_SPEED = 0;
@@ -33,15 +32,8 @@ public class RobotValues {
         this.speed = _speed;
         this.turn = _turn.name;
         this.lightFollower = _lightFollower;
-        this.avoid = _avoid;
-    }
-
-    public RobotValues(int speed, Turn turn, boolean lightFollower, float avoid) {
-        super();
-        this.speed = speed;
-        this.turn = turn.name;
-        this.lightFollower = lightFollower;
-        this.avoid = avoid;
+        this.distance = _distance;
+        this.reflection = _reflection;
     }
 
     public int getId() {
@@ -83,18 +75,29 @@ public class RobotValues {
         return _lightFollower;
     }
 
-    public void setAvoid(float avoid) {
-        _avoid = avoid;
+    public static void setDistance(float distance) {
+        _distance = distance;
 
     }
-    public static float getAvoid() {
-        return _avoid;
+    public static float getDistance() {
+        return _distance;
+    }
+
+    public static void setReflection(float reflection) {
+        _reflection = reflection;
+    }
+
+    public static float getReflection() {
+        return _reflection;
     }
 
     public static String stringify() {
         return _speed + "#" + _turn.value + "#" + _lightFollower;
     } 
 
-    
+    @Override
+    public String toString() {
+        return String.format("Distance: %f%nReflection: %f", _distance, reflection);
+    }    
 
 }
