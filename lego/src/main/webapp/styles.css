@@ -28,6 +28,9 @@ ul {
 
 li {
     padding: 10px;
+    height: 100px;
+    display: flex;
+    justify-content: space-evenly;
 }
 
 form {
@@ -57,7 +60,6 @@ input {
 .object-title {
     color: white;
     font-size: 30px;
-    margin-top: 75px;
     text-align: center;
 }
 
@@ -72,4 +74,9 @@ input {
     position: absolute;
     margin: 150px auto;
     width: 350px;
+}
+
+/* Speed setter */
+h3.speed-setter {
+    font-size: 30px;
 }

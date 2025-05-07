@@ -15,28 +15,33 @@ public class RobotValues {
     private int speed = 0;
     @SuppressWarnings("unused")
     private String turn = "Straight";
+    @SuppressWarnings("unused")
+    private boolean lightFollower = false;
+    private float avoid;
     
     private static int _speed = 0;
     private static Turn _turn = Turn.STRAIGHT;
+    private static boolean _lightFollower = false;
+    private static float _avoid;
 
     private final static int MAX_SPEED = 500;
     private final static int MIN_SPEED = 0;
+
 
     public RobotValues() {
         super();
         this.speed = _speed;
         this.turn = _turn.name;
+        this.lightFollower = _lightFollower;
+        this.avoid = _avoid;
     }
 
-    public RobotValues(int speed) {
-        super();
-        this.speed = speed;
-    }
-
-    public RobotValues(int speed, Turn turn) {
+    public RobotValues(int speed, Turn turn, boolean lightFollower, float avoid) {
         super();
         this.speed = speed;
         this.turn = turn.name;
+        this.lightFollower = lightFollower;
+        this.avoid = avoid;
     }
 
     public int getId() {
@@ -70,8 +75,26 @@ public class RobotValues {
         _turn = turn;
     }
 
+    public static void setLight(boolean lightFollower) {
+        _lightFollower = lightFollower;
+    }
+    
+    public static boolean getLight() {
+        return _lightFollower;
+    }
+
+    public void setAvoid(float avoid) {
+        _avoid = avoid;
+
+    }
+    public static float getAvoid() {
+        return _avoid;
+    }
+
     public static String stringify() {
-        return _speed + "#" + _turn.value;
+        return _speed + "#" + _turn.value + "#" + _lightFollower + "#" + _avoid;
     } 
+
+    
 
 }

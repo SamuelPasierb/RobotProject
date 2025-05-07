@@ -9,6 +9,7 @@ import hamk.project.Motors.Pilot;
 import hamk.project.Sensors.Light;
 import hamk.project.Sensors.UltraSonic;
 import hamk.project.WebService.ReadData;
+import hamk.project.WebService.WriteData;
 
 public class Main {
 
@@ -17,6 +18,7 @@ public class Main {
     private static LCDClass lcd;
     private static Pilot pilot;
     private static ReadData lego;
+    private static WriteData writer;
 
     public static void main(String[] args) {
 
@@ -26,16 +28,21 @@ public class Main {
         lcd = new LCDClass();
         pilot = new Pilot();
         lego = new ReadData();
+        writer = new WriteData();
 
         // Wait
         Button.waitForAnyPress();
 
         // Start threads
-        // ultraSonic.start();
+        ultraSonic.start();
+        
+        
         // light.start();
+        
         lcd.start();
         pilot.start();
         lego.start();
+        writer.start();
 
         // Start movement
         pilot.startMotors();
@@ -59,10 +66,11 @@ public class Main {
         }
     
         ultraSonic.interrupt();
-        light.interrupt();
+        // light.interrupt();
         lcd.interrupt();
         pilot.interrupt();
         lego.interrupt();
+        writer.interrupt();
 
     }
 
@@ -74,4 +82,19 @@ public class Main {
         return pilot;
     }
 
+    public static void lineFollowerSwitch(boolean _light) {
+        if (_light) {
+            if (!light.isAlive()) {
+                    light = new Light(); 
+                    light.start();
+                }
+        } else {
+            light.interrupt();
+        }
+    }
+
+    public static String values() {
+        return "reflection=" + Light.getCurrentReflection() + "&" + "distance=" + UltraSonic.getDistance();
+    }
+    
 }

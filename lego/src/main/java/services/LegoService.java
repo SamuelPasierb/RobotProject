@@ -2,7 +2,7 @@ package services;
 
 // Imports
 import java.util.List;
-
+import java.util.Random;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -30,6 +30,7 @@ import data.RobotValues;
 @Path("/lego")
 public class LegoService {
 
+    // Database
     DatabaseService database = new DatabaseService();
 
 	@Path("/get")
@@ -40,22 +41,18 @@ public class LegoService {
 		return builder.build();
 	}
 
-    @Path("/speedup")
+    /**
+     * Used for speed slider.
+     * Updates the speed in {@link RobotValues}.
+     * @param speed Speed from the slider
+     */
+    @Path("/changespeed")
     @POST
-    public void speedUp() {
-        if (RobotValues.setSpeed(RobotValues.getSpeed() + 25)) {
-            RobotValues robot = new RobotValues(RobotValues.getSpeed(), RobotValues.getTurn());
-            database.save(robot);
-            
-        }
-    }
-
-    @Path("/slowdown")
-    @POST
-    @Produces(MediaType.TEXT_PLAIN)
-    public String slowDown() {
-        if (RobotValues.setSpeed(RobotValues.getSpeed() - 25)) return "Current speed: " + RobotValues.getSpeed();
-        else return "Couldn't change the speed.\nCurrent speed: " + RobotValues.getSpeed(); 
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void speedUp(@FormParam("speed") int speed) {
+        RobotValues.setSpeed(speed);
+        RobotValues robot = new RobotValues();
+        database.save(robot);
     }
 
     @Path("/turn/left")
@@ -74,70 +71,90 @@ public class LegoService {
         return "Dir: " + RobotValues.getTurn();
     }
 
-    
+    /**
+     * Gets everything from the database
+     */
 	@GET
 	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
-	public List<RobotValues> readAllPrey() {
+	public List<RobotValues> readAllValues() {
         List<RobotValues> list = database.load("SELECT v.id, v.speed FROM RobotValues v");
 		return list;
 	}
 
+    /**
+     * Gets the last value inserted into the database
+     */
     @GET
     @Path("/last")
     @Produces(MediaType.APPLICATION_JSON)
-    public RobotValues readLastPrey() {
+    public RobotValues readLastValues() {
         List<RobotValues> list = database.load("SELECT v FROM RobotValues v ORDER BY v.id DESC", 1);
         return list.get(0);
     }
 
     @GET
 	@Path("/testsave")
-	@Consumes(MediaType.APPLICATION_JSON)
 	public void save() {
-        RobotValues robot = new RobotValues(RobotValues.getSpeed(), RobotValues.getTurn());
+        RobotValues robot = new RobotValues();
 		database.save(robot);
 	}
 
+    /**
+     * Saves the current values from the robot to the database
+     * Used only by the robot
+     *
+     * @param speed Current sped of the robot
+     * @param turn Direction of the robot
+     * @param lightFollower Whether light folower is turned on
+     */
     @GET
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void saveByParams(@QueryParam("speed") int speed, @QueryParam("turn") String turn) {
-        RobotValues robot = new RobotValues(speed, Turn.valueOf(turn.toUpperCase()));
+	public void saveByParams(@QueryParam("speed") int speed, @QueryParam("turn") String turn, @QueryParam("reflection") float reflection, @QueryParam("distance") float distance) {
+        RobotValues robot = new RobotValues(speed, Turn.valueOf(turn.toUpperCase()), RobotValues.getLight(), distance);
 		database.save(robot);
 	}
 
-    private void test() {
-        try {
-            ScriptEngineManager manager = new ScriptEngineManager();
-            ScriptEngine engine = manager.getEngineByName("js"); //We can also have "js", "nashorn" instead of "javascript"
-            engine.eval("var PIE = document.getElementById(\"#speedomter\")");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @POST
-	@Path("/setspeed")
-	@Produces(MediaType.APPLICATION_JSON)
-	@Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	public RobotValues postValues(@FormParam("setspeed") int speed) {
-		RobotValues lego=new RobotValues(speed);
-		EntityManagerFactory emf=Persistence.createEntityManagerFactory("lego");
-		EntityManager em=emf.createEntityManager();
-		em.getTransaction().begin();
-		em.persist(lego);
-		em.getTransaction().commit();
-		return lego;
-	}
+    // @POST
+	// @Path("/setspeed")
+	// @Produces(MediaType.APPLICATION_JSON)
+	// @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+	// public RobotValues postValues(@FormParam("setspeed") int speed) {
+	// 	RobotValues lego=new RobotValues(speed);
+	// 	EntityManagerFactory emf=Persistence.createEntityManagerFactory("lego");
+	// 	EntityManager em=emf.createEntityManager();
+	// 	em.getTransaction().begin();
+	// 	em.persist(lego);
+	// 	em.getTransaction().commit();
+	// 	return lego;
+	// }
 
     @Path("/setspeed")
     @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void setSpeed(@FormParam("setspeed") int speed) {
         if (speed >= 0 && speed <= 500) {
-            RobotValues robot = new RobotValues(speed);
+            RobotValues.setSpeed(speed);
+            RobotValues robot = new RobotValues();
             database.save(robot);
         }
     }
         
+    @Path("/line")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void followLine(@FormParam("linefollower") boolean lineFollower) {
+        RobotValues.setLight(lineFollower);
+        RobotValues robot = new RobotValues();
+        database.save(robot);    
+    }
+
+    @Path("/currentdata")
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public String getCurrentData() {
+        int n = new Random().nextInt();
+        return "<h1>" + n + "</h1>";
+    }
 }

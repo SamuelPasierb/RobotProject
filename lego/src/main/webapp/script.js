@@ -1,11 +1,22 @@
 // Speedometer: https://codepen.io/Tomik23/pen/GRpMZBz
 
-// Constants
+// Constants SPEED
 const PIE = document.getElementById("#speedomter");
 const CIRCLE = new CircularProgressBar("pie");
 const SPEED = document.getElementById("speed");
 const SPEED_RANGE = document.getElementById("speedRange");
-const FORM = document.getElementById("form")
+const SPEED_FORM = document.getElementById("speed-form");
+const SPEED_SETTER = document.getElementById("speed-setter");
+const SPEED_VALUE = document.getElementById("set-speed");
+
+// Constants LIGHT FOLLOWER
+const LINE_FOLLOWER_SWITCH = document.getElementById("line-switch");
+const LINE_FORM = document.getElementById("line-form");
+
+// Constats DATA
+const DATA_IFRAME = document.getElementById("data-iframe");
+
+// Constants CALCULATIONS
 const WHEEL_SIZE = 5.6;
 const MAX_POWER = 500;
 
@@ -42,6 +53,25 @@ function calculateSpeed(wheelPower) {
 }
 
 SPEED_RANGE.oninput = function () {
+    
+    // Calculate speed
     calculateSpeed(this.value);
-    FORM.submit();
+    
+    // Sumbit the form
+    SPEED_FORM.submit();
 }
+
+SPEED_SETTER.onclick = function () {
+    
+    // Calucate speed
+    calculateSpeed(SPEED_VALUE.value);
+
+    // Update speed range
+    SPEED_RANGE.value = SPEED_VALUE.value;
+
+}
+
+// Refresh data
+setInterval(() => {
+    DATA_IFRAME.src = DATA_IFRAME.src;  
+}, 1000)
