@@ -14,6 +14,7 @@ public class WriteData extends Thread {
     
     // URL
     private final String baseURL;
+    private final String IP;
 
     private HttpURLConnection conn;
     private InputStreamReader inputStreamReader = null;
@@ -23,7 +24,8 @@ public class WriteData extends Thread {
      * Thread used for writing the data to the database using {@code http://localhost:8080/lego/rest/lego/save}.
      */
     public WriteData() {
-        this.baseURL = "http://172.31.164.138:8080/lego/rest/lego/save";
+        this.IP = "192.168.0.15"; // "172.31.164.138";
+        this.baseURL = "http://" + IP + ":8080/lego/rest/lego/save";
     }
 
     /**

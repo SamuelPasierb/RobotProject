@@ -46,14 +46,9 @@ public class ObstacleAvoidance {
         }
 
         // Will crash
-        else if (distance < AVOID_ZONE) {
-            Main.getPilot().avoidingObstacle();
-        }
-
-        // Speed up
-        else {
-            if (!Main.getPilot().motorsRunning()) Main.getPilot().startMotors();
-        }
+        // else if (distance < AVOID_ZONE) {
+        //     Main.getPilot().avoidingObstacle();
+        // }
 
     }
 

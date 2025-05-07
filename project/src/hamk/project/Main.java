@@ -1,7 +1,6 @@
 package hamk.project;
 
 // Imports
-import lejos.utility.Delay;
 import lejos.hardware.Button;
 
 import hamk.project.LCD.LCDClass;
@@ -30,43 +29,27 @@ public class Main {
         lego = new ReadData();
         writer = new WriteData();
 
+        // Start motors
+        pilot.setSpeed(0, 0);
+        pilot.startMotors();
+
         // Wait
         Button.waitForAnyPress();
 
         // Start threads
         ultraSonic.start();
-        
-        
-        // light.start();
-        
+        light.start();
         lcd.start();
         pilot.start();
         lego.start();
         writer.start();
 
-        // Start movement
-        pilot.startMotors();
-        pilot.setSpeed(200, 200);
-
         while (!Button.ESCAPE.isDown()) {           
-
-            // Speed up
-            if (Button.UP.isDown()) {
-                pilot.changeSpeedBy(10);
-            }
-
-            // Slow down
-            if (Button.DOWN.isDown()) {
-                pilot.changeSpeedBy(-10);
-            }
-
-            // Delay by 20ms
-            Delay.msDelay(20);
 
         }
     
         ultraSonic.interrupt();
-        // light.interrupt();
+        light.interrupt();
         lcd.interrupt();
         pilot.interrupt();
         lego.interrupt();
@@ -83,14 +66,7 @@ public class Main {
     }
 
     public static void lineFollowerSwitch(boolean _light) {
-        if (_light) {
-            if (!light.isAlive()) {
-                    light = new Light(); 
-                    light.start();
-                }
-        } else {
-            light.interrupt();
-        }
+        light.followerOn = _light;
     }
 
     public static String values() {
