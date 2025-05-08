@@ -18,6 +18,7 @@ public class Main {
     private static Pilot pilot;
     private static ReadData lego;
     private static WriteData writer;
+    private static long timeAlive;
 
     public static String avoidType = "STOP";
 
@@ -37,6 +38,7 @@ public class Main {
 
         // Wait
         Button.waitForAnyPress();
+        timeAlive = System.currentTimeMillis();
 
         // Start threads
         ultraSonic.start();
@@ -78,7 +80,8 @@ public class Main {
     }
 
     public static String values() {
-        return "speed=" + getPilot().getSpeed() + "&" + "reflection=" + Light.getCurrentReflection() + "&" + "distance=" + UltraSonic.getDistance() + "&" + "avoid=" + avoidType + "&" + "light=" + light.followerOn;
+        long time = ((System.currentTimeMillis() - timeAlive) / 1000);
+        return "turn=" + pilot.getTurn() + "&" + "speed=" + pilot.getSpeed() + "&" + "reflection=" + Light.getCurrentReflection() + "&" + "distance=" + UltraSonic.getDistance() + "&" + "avoid=" + avoidType + "&" + "light=" + light.followerOn + "&" + "time=" + time;
     }
 
 }

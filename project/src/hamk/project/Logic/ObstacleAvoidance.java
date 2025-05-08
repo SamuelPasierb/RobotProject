@@ -2,6 +2,7 @@ package hamk.project.Logic;
 
 // Imports
 import hamk.project.Main;
+import lejos.utility.Delay;
 
 /**
  * <h3>Class of Obstacle avoidance</h3>
@@ -18,8 +19,7 @@ public class ObstacleAvoidance {
 
     // Zones
     // private final int SCAN_ZONE = 50;
-    public final float _AVOID_ZONE = 10;
-    private final float _DEAD_ZONE = 5;
+    public final float _AVOID_ZONE = 15;
 
     private final int ACCELERATION = 100;
 
@@ -43,14 +43,14 @@ public class ObstacleAvoidance {
      */
     public void avoid(float distance, String type, float speed) {
 
-        float DEAD_ZONE = speed / this.ACCELERATION * this._DEAD_ZONE;
         float AVOID_ZONE = speed / this.ACCELERATION * this._AVOID_ZONE;
 
         // STOP!
         if (type.equals("STOP")) {
-            if (distance < DEAD_ZONE) Main.getPilot().stopMotors();
+            if (distance < AVOID_ZONE) Main.getPilot().stopMotors();
             else if (!Main.getPilot().isMoving()) Main.getPilot().startMotors();
         } else if (distance < AVOID_ZONE && type.equals("TURN_AROUND")) {
+            Main.getPilot().avoidingObstacle();
             Main.getPilot().stopMotors();
             Main.getPilot().rotate(180);
             Main.getPilot().startMotors();

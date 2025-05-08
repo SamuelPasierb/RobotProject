@@ -36,8 +36,9 @@ public class Pilot extends Thread {
     private final Wheel rightWheel;
     private final MovePilot PILOT;
 
-    // Speed
+    // Speed & Turn
     private float speed = 0;
+    private int turnValue = 0;
 
     // Atomic values
     private AtomicBoolean running;
@@ -73,6 +74,8 @@ public class Pilot extends Thread {
 
         // Pilot
         this.PILOT = new MovePilot(new WheeledChassis(new Wheel[] {leftWheel, rightWheel}, WheeledChassis.TYPE_DIFFERENTIAL));
+        this.PILOT.setAngularAcceleration(100);
+        this.PILOT.setLinearAcceleration(250);
 
         // Atomic values
         this.running = new AtomicBoolean(false);
@@ -96,7 +99,7 @@ public class Pilot extends Thread {
             if (!this.turning.get().isEmpty()) {
                 if (this.turning.get().equals("LEFT")) this.turnLeft();
                 else this.turnRight();
-            } else this.goStraight();
+            } else if (!this.avoiding.get()) this.goStraight();
 
         }
 
@@ -118,6 +121,7 @@ public class Pilot extends Thread {
         this.leftMotor.forward();
         this.rightMotor.forward();
         this.leftMotor.endSynchronization();
+        this.avoiding.set(false);
     }
 
     /**
@@ -215,7 +219,14 @@ public class Pilot extends Thread {
      * Makes the robot go straight
      */
     private void goStraight() {
-        this.setSpeed(this.speed, this.speed);
+        if (this.turnValue == 0) this.setSpeed(this.speed, this.speed);
+        else if (this.turnValue > 0) {
+            float v = 1f + this.turnValue / 50f;
+            this.setSpeed(this.speed * v, this.speed / v);
+        } else {
+            float v = 1f + this.turnValue / -50f;
+            this.setSpeed(this.speed / v, this.speed * v);
+        }
     }
 
 
@@ -243,39 +254,40 @@ public class Pilot extends Thread {
      */
     public void avoid() {
 
-      
-        // Speed
-        this.PILOT.setAngularSpeed(this.speed);
-        this.PILOT.setLinearSpeed(this.speed);
+        this.stopMotors();
 
-        // Around
-        this.PILOT.arc(-200, 60);
-        this.PILOT.travel(200);
-        this.PILOT.arc(75, 105);
+        // Go left and forward
+        this.PILOT.rotate(90);
+        this.PILOT.travel(400);
 
-        // Go back towards the line
-        this.PILOT.travel(200);
+        // Go around the obstacle
+        this.PILOT.rotate(-90);
+        this.PILOT.travel(400);
 
-        // Look for the line
-        this.PILOT.forward();
+        // Go back 
+        this.PILOT.rotate(-90);
+        this.PILOT.travel(400);
 
-        // Go back a little bit
-        this.PILOT.stop();
-        this.PILOT.arc(35, -40);
-        
-        // Finished avoiding
-        this.avoidThread.set(false);
+        // Turn back
+        this.PILOT.rotate(90);
+
         this.avoiding.set(false);
-     
-      
-    
+
+        this.startMotors();
+
   } 
 
     public void rotate(int angle) {
-        this.leftMotor.startSynchronization();
-        this.leftMotor.rotate(angle);
-        this.rightMotor.rotate(-angle);
-        this.leftMotor.endSynchronization();
+        this.PILOT.rotate(angle);
     }
+
+    public void updateTurnValue(int turnValue) {
+        this.turnValue = turnValue;
+    }
+
+    public int getTurn() {
+        return this.turnValue;
+    }
+
 
 }
