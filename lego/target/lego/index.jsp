@@ -65,9 +65,9 @@
                     </form>
                 </li>
                 <li>
-                    <form action="./rest/lego/turn/left" method="POST"><input type="submit" name="turnleft" value="TURN LEFT" onclick="turndegrees(-1)"></form>
+                    <form action="./rest/lego/turn/left" method="POST"><input type="submit" name="turnleft" value="TURN LEFT" onclick="turnDegrees(-1)"></form>
                     <h4 id="turndegrees">0&#176;</h4>
-                    <form action="./rest/lego/turn/right" method="POST"><input type="submit" name="turnright" value="TURN RIGHT" onclick="turndegrees(1)"></form>
+                    <form action="./rest/lego/turn/right" method="POST"><input type="submit" name="turnright" value="TURN RIGHT" onclick="turnDegrees(1)"></form>
                 </li>
             </ul>
         </div>

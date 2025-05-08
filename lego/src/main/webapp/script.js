@@ -17,8 +17,9 @@ const LINE_FORM = document.getElementById("line-form");
 
 // Constants OBSTACLE AVOIDANCE
 const AVOIDANCE_FORM = document.getElementById("avoidance-form");
+
+// Constaints TURNS
 const TURN = document.getElementById("turndegrees");
-var degrees = 0;
 
 // Constats DATA
 const DATA_IFRAME = document.getElementById("data-iframe");
@@ -62,6 +63,7 @@ function calculateSpeed(wheelPower) {
 
 }
 
+// Speed range
 SPEED_RANGE.onchange = function () {
     
     // Calculate speed
@@ -71,6 +73,7 @@ SPEED_RANGE.onchange = function () {
     SPEED_FORM.submit();
 }
 
+// Manual speed
 SPEED_SETTER.onclick = function () {
     
     // Calucate speed
@@ -86,6 +89,18 @@ function avoidanceForm() {
     AVOIDANCE_FORM.submit();
 }
 
+// Turning
+var degrees = 0;
+function turnDegrees(val) {
+
+    // Outside of range
+    if (degrees + val < -5 || degrees + val > 5) return;
+    
+    // Update values
+    degrees += val;
+    TURN.innerText = degrees * 10 + "°";
+}
+
 // Refresh data
 setInterval(() => {
 
@@ -98,9 +113,3 @@ setInterval(() => {
         AVERAGE_SPEED.innerText = "Average speed: " + (sum / SPEEDS.length).toFixed(2) + "  cm/s"; // Set average
     }
 }, 1000)
-
-function turndegrees(val) {
-    if (degrees + val < -5 || degrees + val > 5) return;
-    degrees += val;
-    TURN.innerText = degrees * 10 + "°";
-}

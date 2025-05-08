@@ -2,7 +2,6 @@ package services;
 
 // Imports
 import java.util.List;
-import java.util.Random;
 
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.Consumes;
@@ -23,6 +22,10 @@ public class LegoService {
     // Database
     DatabaseService database = new DatabaseService();
 
+    /**
+     * Used for reading the data from the webservice by the robot
+     * @return String of all the important data
+     */
 	@Path("/get")
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
@@ -43,12 +46,18 @@ public class LegoService {
         RobotValues.setSpeed(speed);
     }
 
+    /**
+     * Go more left
+     */
     @Path("/turn/left")
     @POST
     public void turnLeft() {
         RobotValues.setTurn(RobotValues.getTurn() - 1);
     }
 
+    /**
+     * Go more right
+     */
     @Path("/turn/right")
     @POST
     public void turnRight() {
@@ -77,13 +86,6 @@ public class LegoService {
         return list.get(0);
     }
 
-    @GET
-	@Path("/testsave")
-	public void save() {
-        RobotValues robot = new RobotValues();
-		database.save(robot);
-	}
-
     /**
      * Saves the current values from the robot to the database
      * Used only by the robot
@@ -107,20 +109,10 @@ public class LegoService {
 		database.save(robot);
 	}
 
-    // @POST
-	// @Path("/setspeed")
-	// @Produces(MediaType.APPLICATION_JSON)
-	// @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
-	// public RobotValues postValues(@FormParam("setspeed") int speed) {
-	// 	RobotValues lego=new RobotValues(speed);
-	// 	EntityManagerFactory emf=Persistence.createEntityManagerFactory("lego");
-	// 	EntityManager em=emf.createEntityManager();
-	// 	em.getTransaction().begin();
-	// 	em.persist(lego);
-	// 	em.getTransaction().commit();
-	// 	return lego;
-	// }
-
+    /**
+     * Manually setting speed
+     * @param speed New speed
+     */
     @Path("/setspeed")
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -130,6 +122,10 @@ public class LegoService {
         }
     }
         
+    /**
+     * Line follower switch
+     * @param lineFollower Whether the swich is on or off
+     */
     @Path("/line")
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -137,6 +133,10 @@ public class LegoService {
         RobotValues.setLight(lineFollower);  
     }
 
+    /**
+     * Which type of obstacle avoidance to use (STOP, TURN AROUND, GO AROUND)
+     * @param type Type of obstacle avoidance
+     */
     @Path("/avoidance")
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -144,6 +144,10 @@ public class LegoService {
         RobotValues.setAvoidance(type);
     }
 
+    /**
+     * Used in the iframe with sensor data and time alive
+     * @return HTML for the iframe
+     */
     @Path("/currentdata")
     @GET
     @Produces(MediaType.TEXT_HTML)

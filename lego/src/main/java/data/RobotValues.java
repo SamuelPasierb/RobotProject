@@ -111,15 +111,6 @@ public class RobotValues {
         return _avoidance;
     }
 
-    public static String stringify() {
-        return _speed + "#" + _turn + "#" + _lightFollower + "#" + _avoidance;
-    } 
-
-    @Override
-    public String toString() {
-        return String.format("Distance: %s%nReflection: %s %nTime Alive: %s", df.format(_distance), df.format(_reflection), String.valueOf(_time));
-    }    
-
     public static void setTime(long time) {
         _time = time;
     }
@@ -128,5 +119,15 @@ public class RobotValues {
         return _time;
     }
 
+    // Used for robot reading the data
+    public static String stringify() {
+        return _speed + "#" + _turn + "#" + _lightFollower + "#" + _avoidance;
+    } 
+
+    // Showing robot data from the sensors and time alive
+    @Override
+    public String toString() {
+        return String.format("Distance: %s%nReflection: %s%nTime Alive: %s seconds", df.format(_distance), df.format(_reflection), String.valueOf(_time));
+    }    
 
 }
