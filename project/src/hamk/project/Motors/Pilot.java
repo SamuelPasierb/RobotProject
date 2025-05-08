@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import lejos.hardware.Button;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.MotorPort;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.chassis.Wheel;
 import lejos.robotics.chassis.WheeledChassis;
 import lejos.robotics.navigation.MovePilot;
@@ -14,6 +15,7 @@ import lejos.robotics.navigation.MovePilot;
 import hamk.project.LCD.LCDClass;
 import hamk.project.Logic.ObstacleAvoidance;
 import hamk.project.Sensors.Light;
+import hamk.project.Sensors.UltraSonic;
 
 /**
   * <h3>Pilot class for the EV3 motors.</h3>
@@ -35,8 +37,7 @@ public class Pilot extends Thread {
     private final MovePilot PILOT;
 
     // Speed
-    private float leftSpeed = 0;
-    private float rightSpeed = 0;
+    private float speed = 0;
 
     // Atomic values
     private AtomicBoolean running;
@@ -64,7 +65,7 @@ public class Pilot extends Thread {
         this.leftMotor.setAcceleration(100); this.rightMotor.setAcceleration(100);
 
         // Synchonize the motors
-        this.leftMotor.startSynchronization(); this.rightMotor.startSynchronization();
+        this.leftMotor.synchronizeWith(new RegulatedMotor[] {this.rightMotor});
 
         // Wheels
         this.leftWheel = WheeledChassis.modelWheel(leftMotor, WHEEL_DIAMETER).offset(-WHEELBASE / 2);
@@ -100,6 +101,10 @@ public class Pilot extends Thread {
         }
 
     }
+
+    public boolean isMoving() {
+        return this.leftMotor.isMoving() && this.rightMotor.isMoving();
+    }
     
     /**
       * <h3>Start motors</h3>
@@ -109,8 +114,10 @@ public class Pilot extends Thread {
       */
     public void startMotors() {
         this.running.set(true);
+        this.leftMotor.startSynchronization();
         this.leftMotor.forward();
         this.rightMotor.forward();
+        this.leftMotor.endSynchronization();
     }
 
     /**
@@ -121,10 +128,15 @@ public class Pilot extends Thread {
       */
     public void stopMotors() {
         this.running.set(false);
+        this.leftMotor.startSynchronization();
         this.leftMotor.stop();
         this.rightMotor.stop();
+        this.leftMotor.endSynchronization();
     }
 
+    public float getSpeed() {
+        return speed;
+    }
 
     /**
      * <h3>Update speed</h3>
@@ -135,8 +147,7 @@ public class Pilot extends Thread {
     public void updateSpeed(int speed) {
         
         // Update the speed
-        this.leftSpeed = speed;
-        this.rightSpeed = speed;
+        this.speed = speed;
     }
 
     /** 
@@ -153,14 +164,16 @@ public class Pilot extends Thread {
         boolean needToStart = this.leftMotor.getSpeed() == 0 || this.rightMotor.getSpeed() == 0;
         
         // Change speed
+        this.leftMotor.startSynchronization();
         this.leftMotor.setSpeed(leftSpeed);
         this.rightMotor.setSpeed(rightSpeed);
+        this.leftMotor.endSynchronization();
 
         // Start motors if they need to be started
         if (needToStart) this.startMotors();
 
         // Update lcd
-        LCDClass.speed.set("Speed: " + ((int) (leftSpeed + rightSpeed) / 2));
+        LCDClass.speed.set("Speed: " + this.speed);
     }
 
     /**
@@ -186,7 +199,7 @@ public class Pilot extends Thread {
       * Makes the robot turn left
       */
     private void turnLeft() {
-        this.setSpeed(this.leftSpeed / 1.4f, this.rightSpeed * 1.4f);
+        this.setSpeed(this.speed / 1.4f, this.speed * 1.4f);
     }
 
     /**
@@ -194,7 +207,7 @@ public class Pilot extends Thread {
       * Makes the robot turn right
       */
     private void turnRight() {
-        this.setSpeed(this.leftSpeed * 1.4f, this.rightSpeed / 1.4f);
+        this.setSpeed(this.speed * 1.4f, this.speed / 1.4f);
     }
 
     /**
@@ -202,7 +215,7 @@ public class Pilot extends Thread {
      * Makes the robot go straight
      */
     private void goStraight() {
-        this.setSpeed(this.leftSpeed, this.rightSpeed);
+        this.setSpeed(this.speed, this.speed);
     }
 
 
@@ -230,9 +243,10 @@ public class Pilot extends Thread {
      */
     public void avoid() {
 
+      
         // Speed
-        this.PILOT.setAngularSpeed(200);
-        this.PILOT.setLinearSpeed(500);
+        this.PILOT.setAngularSpeed(this.speed);
+        this.PILOT.setLinearSpeed(this.speed);
 
         // Around
         this.PILOT.arc(-200, 60);
@@ -243,13 +257,7 @@ public class Pilot extends Thread {
         this.PILOT.travel(200);
 
         // Look for the line
-        this.PILOT.setLinearSpeed(75);
         this.PILOT.forward();
-
-        // Until the robot finds the line
-        while (Light.getCurrentReflection() > Light.BORDER && !Button.ESCAPE.isDown()) {
-            
-        }
 
         // Go back a little bit
         this.PILOT.stop();
@@ -258,6 +266,16 @@ public class Pilot extends Thread {
         // Finished avoiding
         this.avoidThread.set(false);
         this.avoiding.set(false);
+     
+      
+    
+  } 
+
+    public void rotate(int angle) {
+        this.leftMotor.startSynchronization();
+        this.leftMotor.rotate(angle);
+        this.rightMotor.rotate(-angle);
+        this.leftMotor.endSynchronization();
     }
 
 }

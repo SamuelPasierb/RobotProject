@@ -24,7 +24,7 @@ public class WriteData extends Thread {
      * Thread used for writing the data to the database using {@code http://localhost:8080/lego/rest/lego/save}.
      */
     public WriteData() {
-        this.IP = "192.168.0.15"; // "172.31.164.138";
+        this.IP = /* "192.168.0.15"; */ "172.31.164.138";
         this.baseURL = "http://" + IP + ":8080/lego/rest/lego/save";
     }
 
@@ -95,7 +95,7 @@ public class WriteData extends Thread {
         String query = "?";
 
         // TODO: Get all the important information here
-        query += "speed=50&turn=Straight&" + Main.values();
+        query += "turn=Straight&" + Main.values();
 
         // Return
         return query;

@@ -57,9 +57,9 @@
                     <form action="./rest/lego/avoidance" method="POST" id="avoidance-form">
                         <input type="radio" name="avoidance-type" value="STOP" onclick="avoidanceForm()" checked>
                         <label for="radio1">Just stop</label>
-                        <input type="radio" name="avoidance-type" value="TURN AROUND" onclick="avoidanceForm()">
+                        <input type="radio" name="avoidance-type" value="TURN_AROUND" onclick="avoidanceForm()">
                         <label for="radio2">Turn around</label>
-                        <input type="radio" name="avoidance-type" value="GO AROUND" onclick="avoidanceForm()">
+                        <input type="radio" name="avoidance-type" value="GO_AROUND" onclick="avoidanceForm()">
                         <label for="radio3">Go around</label>
                     </form>
                 </li>

@@ -19,6 +19,8 @@ public class Main {
     private static ReadData lego;
     private static WriteData writer;
 
+    public static String avoidType = "STOP";
+
     public static void main(String[] args) {
 
         // Threads
@@ -69,8 +71,14 @@ public class Main {
         light.followerOn = _light;
     }
 
-    public static String values() {
-        return "reflection=" + Light.getCurrentReflection() + "&" + "distance=" + UltraSonic.getDistance();
+    public static void avoidanceType(String type) {
+        if (type.equals("Stop")) {
+
+        }
     }
-    
+
+    public static String values() {
+        return "speed=" + getPilot().getSpeed() + "&" + "reflection=" + Light.getCurrentReflection() + "&" + "distance=" + UltraSonic.getDistance() + "&" + "avoid=" + avoidType + "&" + "light=" + light.followerOn;
+    }
+
 }

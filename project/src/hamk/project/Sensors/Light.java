@@ -83,7 +83,7 @@ public class Light extends Thread {
      */
     public static float getCurrentReflection() {
         light.fetchSample(sample, 0);
-        return sample[0];
+        return sample[0] * 100.0f;
     }
 
 }

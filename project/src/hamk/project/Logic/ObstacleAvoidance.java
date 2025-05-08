@@ -9,6 +9,7 @@ import hamk.project.Main;
  * @author Samuel Pasierb
  */
 public class ObstacleAvoidance {
+
     
     // Robot
     // private final int WIDTH = 10;
@@ -17,8 +18,10 @@ public class ObstacleAvoidance {
 
     // Zones
     // private final int SCAN_ZONE = 50;
-    public static final int AVOID_ZONE = 30;
-    private final int DEAD_ZONE = 5;
+    public final float _AVOID_ZONE = 10;
+    private final float _DEAD_ZONE = 5;
+
+    private final int ACCELERATION = 100;
 
     private final static Runnable runnable = new Runnable() {
         @Override
@@ -38,11 +41,21 @@ public class ObstacleAvoidance {
      * Robot will go at his usual speed if {@code distance} is more that {@code AVOID_ZONE} and {@code DEAD_ZONE} values.
      * </p>
      */
-    public void avoid(float distance) {
+    public void avoid(float distance, String type, float speed) {
+
+        float DEAD_ZONE = speed / this.ACCELERATION * this._DEAD_ZONE;
+        float AVOID_ZONE = speed / this.ACCELERATION * this._AVOID_ZONE;
 
         // STOP!
-        if (distance < DEAD_ZONE) {
+        if (type.equals("STOP")) {
+            if (distance < DEAD_ZONE) Main.getPilot().stopMotors();
+            else if (!Main.getPilot().isMoving()) Main.getPilot().startMotors();
+        } else if (distance < AVOID_ZONE && type.equals("TURN_AROUND")) {
             Main.getPilot().stopMotors();
+            Main.getPilot().rotate(180);
+            Main.getPilot().startMotors();
+        } else if (distance < AVOID_ZONE && type.equals("GO_AROUND")) {
+            Main.getPilot().avoid();
         }
 
         // Will crash
@@ -51,6 +64,7 @@ public class ObstacleAvoidance {
         // }
 
     }
+
 
     /**
      * <h3>Thread for avoiding obstacle</h3>
