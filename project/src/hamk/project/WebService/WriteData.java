@@ -9,6 +9,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 
 import hamk.project.Main;
+import lejos.utility.Delay;
 
 public class WriteData extends Thread {
     
@@ -39,12 +40,8 @@ public class WriteData extends Thread {
             // Save data
             save();
 
-            // 1s delay
-            try {
-				Thread.sleep(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+            // 5s delay
+            Delay.msDelay(5000);
 
         }
         
@@ -92,13 +89,7 @@ public class WriteData extends Thread {
     private String createQuery() {
 
         // Query
-        String query = "?";
-
-        // TODO: Get all the important information here
-        query += "turn=Straight&" + Main.values();
-
-        // Return
-        return query;
+        return "?" + Main.values();
     }
 
 }

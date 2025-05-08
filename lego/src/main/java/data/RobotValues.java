@@ -1,5 +1,7 @@
 package data;
 
+import java.text.DecimalFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,31 +14,35 @@ public class RobotValues {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     @SuppressWarnings("unused") private int speed = 0;
-    @SuppressWarnings("unused") private String turn = "Straight";
+    @SuppressWarnings("unused") private int turn = 0;
     @SuppressWarnings("unused") private float distance;
     @SuppressWarnings("unused") private float reflection;
     @SuppressWarnings("unused") private boolean lightFollower = false;
     @SuppressWarnings("unused") private String avoidance = "STOP";
+    @SuppressWarnings("unused") private long time = 0;
     
     private static int _speed = 0;
-    private static Turn _turn = Turn.STRAIGHT;
+    private static int _turn = 0;
     private static float _distance;
     private static float _reflection;
     private static boolean _lightFollower = false;
     private static String _avoidance = "STOP";
+    private static long _time = 0;
 
     private final static int MAX_SPEED = 500;
     private final static int MIN_SPEED = 0;
 
+    private final static DecimalFormat df = new DecimalFormat("#.##");
 
     public RobotValues() {
         super();
         this.speed = _speed;
-        this.turn = _turn.name;
+        this.turn = _turn;
         this.lightFollower = _lightFollower;
         this.distance = _distance;
         this.reflection = _reflection;
         this.avoidance = _avoidance;
+        this.time = _time;
     }
 
     public int getId() {
@@ -51,23 +57,26 @@ public class RobotValues {
         return _speed;
     }
 
-    public static boolean setSpeed(int speed) {
+    public static void setSpeed(int speed) {
         
-        // Can't use this speed
-        if (speed < MIN_SPEED || speed > MAX_SPEED) {
-            return false;
+        // Can use this speed
+        if (speed > MIN_SPEED && speed < MAX_SPEED) {
+            _speed = speed;
         }
-        
-        _speed = speed;
-        return true;
+
     }
 
-    public static Turn getTurn() {
+    public static int getTurn() {
         return _turn;
     }
 
-    public static void setTurn(Turn turn) {
-        _turn = turn;
+    public static void setTurn(int turn) {
+
+        // Can use
+        if (turn >= -5 && turn <= 5) {
+            _turn = turn;
+        }
+
     }
 
     public static void setLight(boolean lightFollower) {
@@ -103,12 +112,21 @@ public class RobotValues {
     }
 
     public static String stringify() {
-        return _speed + "#" + _turn.value + "#" + _lightFollower + "#" + _avoidance;
+        return _speed + "#" + _turn + "#" + _lightFollower + "#" + _avoidance;
     } 
 
     @Override
     public String toString() {
-        return String.format("Distance: %f%nReflection: %f", _distance, _reflection);
+        return String.format("Distance: %s%nReflection: %s %nTime Alive: %s", df.format(_distance), df.format(_reflection), String.valueOf(_time));
     }    
+
+    public static void setTime(long time) {
+        _time = time;
+    }
+
+    public static long getTime() {
+        return _time;
+    }
+
 
 }

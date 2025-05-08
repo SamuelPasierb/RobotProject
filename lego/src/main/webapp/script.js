@@ -17,6 +17,8 @@ const LINE_FORM = document.getElementById("line-form");
 
 // Constants OBSTACLE AVOIDANCE
 const AVOIDANCE_FORM = document.getElementById("avoidance-form");
+const TURN = document.getElementById("turndegrees");
+var degrees = 0;
 
 // Constats DATA
 const DATA_IFRAME = document.getElementById("data-iframe");
@@ -96,3 +98,9 @@ setInterval(() => {
         AVERAGE_SPEED.innerText = "Average speed: " + (sum / SPEEDS.length).toFixed(2) + "  cm/s"; // Set average
     }
 }, 1000)
+
+function turndegrees(val) {
+    if (degrees + val < -5 || degrees + val > 5) return;
+    degrees += val;
+    TURN.innerText = degrees * 10 + "°";
+}

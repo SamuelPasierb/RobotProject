@@ -11,6 +11,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 import hamk.project.Main;
+import lejos.utility.Delay;
 
 public class ReadData extends Thread {
 
@@ -44,11 +45,7 @@ public class ReadData extends Thread {
         while (!this.isInterrupted()) {
 
             // 100ms delay
-            try {
-				Thread.sleep(100);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+            Delay.msDelay(50);
 
             // Read data
             readData();
@@ -80,9 +77,13 @@ public class ReadData extends Thread {
             // Read data
             while ((s = bufferedReader.readLine()) != null){
                 String [] values = s.split("#");
+                
                 // Speed
                 Main.getPilot().updateSpeed(Integer.parseInt(values[0]));
                 
+                // Turn
+                Main.getPilot().updateTurnValue(Integer.parseInt(values[1]));
+
                 // Line follower
                 Main.lineFollowerSwitch(Boolean.parseBoolean(values[2]));
 

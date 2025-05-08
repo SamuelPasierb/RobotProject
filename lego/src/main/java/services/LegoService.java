@@ -15,7 +15,6 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.ResponseBuilder;
 
-import data.Turn;
 import data.RobotValues;
 
 @Path("/lego")
@@ -46,18 +45,14 @@ public class LegoService {
 
     @Path("/turn/left")
     @POST
-    @Produces(MediaType.TEXT_PLAIN)
-    public String turnLeft() {
-        RobotValues.setTurn(Turn.LEFT);
-        return "Dir: " + RobotValues.getTurn();
+    public void turnLeft() {
+        RobotValues.setTurn(RobotValues.getTurn() - 1);
     }
 
     @Path("/turn/right")
     @POST
-    @Produces(MediaType.APPLICATION_JSON)
-    public String turnRight() {
-        RobotValues.setTurn(Turn.RIGHT);
-        return "Dir: " + RobotValues.getTurn();
+    public void turnRight() {
+        RobotValues.setTurn(RobotValues.getTurn() + 1);
     }
 
     /**
@@ -100,13 +95,14 @@ public class LegoService {
     @GET
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void saveByParams(@QueryParam("turn") String turn, @QueryParam("speed") float speed, @QueryParam("reflection") float reflection, @QueryParam("distance") float distance, @QueryParam("avoid") String type, @QueryParam("light") boolean light) {
+	public void saveByParams(@QueryParam("turn") int turn, @QueryParam("speed") float speed, @QueryParam("reflection") float reflection, @QueryParam("distance") float distance, @QueryParam("avoid") String type, @QueryParam("light") boolean light, @QueryParam("time") long time) {
         RobotValues.setSpeed((int) speed);
-        RobotValues.setTurn(Turn.valueOf(turn.toUpperCase()));
+        RobotValues.setTurn(turn);
         RobotValues.setDistance(distance);
         RobotValues.setReflection(reflection);
         RobotValues.setAvoidance(type);
         RobotValues.setLight(light);
+        RobotValues.setTime(time);
         RobotValues robot = new RobotValues();
 		database.save(robot);
 	}
