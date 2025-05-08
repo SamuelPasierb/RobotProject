@@ -20,6 +20,7 @@
                         "colorCircle": "#f1f1f1"}'>
                         <h3 id="speed">0 m/s</h3>
                     </div>
+                    <h4 id="average-speed">Average speed: not enought data</h4>
                 </div>
                 <div class="object">
                     <iframe src="./rest/lego/currentdata" id="data-iframe"></iframe>
@@ -49,6 +50,17 @@
                     <h3>Line Follower Switch</h3>
                     <form action="./rest/lego/line" method="POST" id="line-form">
                         <input type="checkbox" name="linefollower" id="line-switch" onclick="document.getElementById('line-form').submit()" value="true">
+                    </form>
+                </li>
+                <li>
+                    <h3>Obstacle avoidance</h3>
+                    <form action="./rest/lego/avoidance" method="POST" id="avoidance-form">
+                        <input type="radio" name="avoidance-type" value="STOP" onclick="avoidanceForm()" checked>
+                        <label for="radio1">Just stop</label>
+                        <input type="radio" name="avoidance-type" value="TURN AROUND" onclick="avoidanceForm()">
+                        <label for="radio2">Turn around</label>
+                        <input type="radio" name="avoidance-type" value="GO AROUND" onclick="avoidanceForm()">
+                        <label for="radio3">Go around</label>
                     </form>
                 </li>
                 <li>

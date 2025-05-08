@@ -53,7 +53,7 @@ public class DatabaseService {
      * @return {@link List} of {@link RobotValues} from the Database
      */
     @SuppressWarnings("unchecked")
-    public final List<RobotValues> load(String query, int count) {
+    public final List<Object> load(String query, int count) {
         return em.createQuery(query).setMaxResults(count).getResultList();
     }
 

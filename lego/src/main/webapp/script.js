@@ -8,10 +8,15 @@ const SPEED_RANGE = document.getElementById("speedRange");
 const SPEED_FORM = document.getElementById("speed-form");
 const SPEED_SETTER = document.getElementById("speed-setter");
 const SPEED_VALUE = document.getElementById("set-speed");
+const AVERAGE_SPEED = document.getElementById("average-speed");
+const SPEEDS = [];
 
 // Constants LIGHT FOLLOWER
 const LINE_FOLLOWER_SWITCH = document.getElementById("line-switch");
 const LINE_FORM = document.getElementById("line-form");
+
+// Constants OBSTACLE AVOIDANCE
+const AVOIDANCE_FORM = document.getElementById("avoidance-form");
 
 // Constats DATA
 const DATA_IFRAME = document.getElementById("data-iframe");
@@ -47,6 +52,9 @@ function calculateSpeed(wheelPower) {
     // Calculate velocity
     var velocity = (WHEEL_SIZE * wheelPower / 60).toFixed(2);
 
+    // For average speed
+    SPEEDS.push(Number.parseInt(velocity));
+
     // Set velocity
     SPEED.innerText = velocity + " cm/s";
 
@@ -71,7 +79,20 @@ SPEED_SETTER.onclick = function () {
 
 }
 
+// Obstacle avoidance form
+function avoidanceForm() {
+    AVOIDANCE_FORM.submit();
+}
+
 // Refresh data
 setInterval(() => {
+
+    // Update sensor data from the robot
     DATA_IFRAME.src = DATA_IFRAME.src;  
+
+    // Average speed
+    if (SPEEDS.length > 10) {
+        var sum = SPEEDS.reduce((a, b) => a + b, 0); // Sum
+        AVERAGE_SPEED.innerText = "Average speed: " + (sum / SPEEDS.length).toFixed(2) + "  cm/s"; // Set average
+    }
 }, 1000)

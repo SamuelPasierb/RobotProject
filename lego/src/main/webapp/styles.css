@@ -28,7 +28,6 @@ ul {
 
 li {
     padding: 10px;
-    height: 100px;
     display: flex;
     justify-content: space-evenly;
 }
@@ -45,6 +44,11 @@ input {
     background-color: white;
     border-radius: 20px;
     box-shadow: 3px 3px rgba(255, 255, 255, 0.3);
+}
+
+label {
+    color: white;
+    font-size: 35px;
 }
 
 .objects {
@@ -74,6 +78,11 @@ input {
     position: absolute;
     margin: 150px auto;
     width: 350px;
+}
+
+#average-speed {
+    color: white;
+    font-size: 2em;
 }
 
 /* Speed setter */

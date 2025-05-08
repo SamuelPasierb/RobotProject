@@ -42,8 +42,6 @@ public class LegoService {
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void speedUp(@FormParam("speed") int speed) {
         RobotValues.setSpeed(speed);
-        RobotValues robot = new RobotValues();
-        database.save(robot);
     }
 
     @Path("/turn/left")
@@ -69,7 +67,7 @@ public class LegoService {
 	@Path("/all")
 	@Produces(MediaType.APPLICATION_JSON)
 	public List<RobotValues> readAllValues() {
-        List<RobotValues> list = database.load("SELECT v.id, v.speed FROM RobotValues v");
+        List<RobotValues> list = database.load("SELECT v.id, v.speed, v.turn, v.reflection, v.distance FROM RobotValues v");
 		return list;
 	}
 
@@ -79,8 +77,8 @@ public class LegoService {
     @GET
     @Path("/last")
     @Produces(MediaType.APPLICATION_JSON)
-    public RobotValues readLastValues() {
-        List<RobotValues> list = database.load("SELECT v FROM RobotValues v ORDER BY v.id DESC", 1);
+    public Object readLastValues() {
+        List<Object> list = database.load("SELECT v.id, v.speed, v.turn, v.reflection, v.distance FROM RobotValues v ORDER BY v.id DESC", 1);
         return list.get(0);
     }
 
@@ -131,8 +129,6 @@ public class LegoService {
     public void setSpeed(@FormParam("setspeed") int speed) {
         if (speed >= 0 && speed <= 500) {
             RobotValues.setSpeed(speed);
-            RobotValues robot = new RobotValues();
-            database.save(robot);
         }
     }
         
@@ -140,9 +136,14 @@ public class LegoService {
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void followLine(@FormParam("linefollower") boolean lineFollower) {
-        RobotValues.setLight(lineFollower);
-        RobotValues robot = new RobotValues();
-        database.save(robot);    
+        RobotValues.setLight(lineFollower);  
+    }
+
+    @Path("avoidance")
+    @POST
+    @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
+    public void avoidObstacles(@FormParam("avoidance-type") String type) {
+        RobotValues.setAvoidance(type);
     }
 
     @Path("/currentdata")

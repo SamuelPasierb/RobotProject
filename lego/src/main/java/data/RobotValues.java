@@ -13,15 +13,17 @@ public class RobotValues {
     private int id;
     @SuppressWarnings("unused") private int speed = 0;
     @SuppressWarnings("unused") private String turn = "Straight";
-    @SuppressWarnings("unused") private boolean lightFollower = false;
     @SuppressWarnings("unused") private float distance;
     @SuppressWarnings("unused") private float reflection;
+    @SuppressWarnings("unused") private boolean lightFollower = false;
+    @SuppressWarnings("unused") private String avoidance = "Stop";
     
     private static int _speed = 0;
     private static Turn _turn = Turn.STRAIGHT;
-    private static boolean _lightFollower = false;
     private static float _distance;
     private static float _reflection;
+    private static boolean _lightFollower = false;
+    private static String _avoidance = "Stop";
 
     private final static int MAX_SPEED = 500;
     private final static int MIN_SPEED = 0;
@@ -34,6 +36,7 @@ public class RobotValues {
         this.lightFollower = _lightFollower;
         this.distance = _distance;
         this.reflection = _reflection;
+        this.avoidance = _avoidance;
     }
 
     public int getId() {
@@ -91,13 +94,21 @@ public class RobotValues {
         return _reflection;
     }
 
+    public static void setAvoidance(String avoidance) {
+        _avoidance = avoidance;
+    }
+
+    public static String getAvoidance() {
+        return _avoidance;
+    }
+
     public static String stringify() {
-        return _speed + "#" + _turn.value + "#" + _lightFollower;
+        return _speed + "#" + _turn.value + "#" + _lightFollower + "#" + _avoidance;
     } 
 
     @Override
     public String toString() {
-        return String.format("Distance: %f%nReflection: %f", _distance, reflection);
+        return String.format("Distance: %f%nReflection: %f", _distance, _reflection);
     }    
 
 }
