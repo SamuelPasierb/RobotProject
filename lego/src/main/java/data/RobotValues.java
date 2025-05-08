@@ -16,14 +16,14 @@ public class RobotValues {
     @SuppressWarnings("unused") private float distance;
     @SuppressWarnings("unused") private float reflection;
     @SuppressWarnings("unused") private boolean lightFollower = false;
-    @SuppressWarnings("unused") private String avoidance = "Stop";
+    @SuppressWarnings("unused") private String avoidance = "STOP";
     
     private static int _speed = 0;
     private static Turn _turn = Turn.STRAIGHT;
     private static float _distance;
     private static float _reflection;
     private static boolean _lightFollower = false;
-    private static String _avoidance = "Stop";
+    private static String _avoidance = "STOP";
 
     private final static int MAX_SPEED = 500;
     private final static int MIN_SPEED = 0;

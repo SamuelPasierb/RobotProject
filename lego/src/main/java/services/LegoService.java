@@ -100,11 +100,13 @@ public class LegoService {
     @GET
 	@Path("/save")
 	@Consumes(MediaType.APPLICATION_JSON)
-	public void saveByParams(@QueryParam("speed") int speed, @QueryParam("turn") String turn, @QueryParam("reflection") float reflection, @QueryParam("distance") float distance) {
-        RobotValues.setSpeed(speed);
+	public void saveByParams(@QueryParam("turn") String turn, @QueryParam("speed") float speed, @QueryParam("reflection") float reflection, @QueryParam("distance") float distance, @QueryParam("avoid") String type, @QueryParam("light") boolean light) {
+        RobotValues.setSpeed((int) speed);
         RobotValues.setTurn(Turn.valueOf(turn.toUpperCase()));
         RobotValues.setDistance(distance);
         RobotValues.setReflection(reflection);
+        RobotValues.setAvoidance(type);
+        RobotValues.setLight(light);
         RobotValues robot = new RobotValues();
 		database.save(robot);
 	}
@@ -139,7 +141,7 @@ public class LegoService {
         RobotValues.setLight(lineFollower);  
     }
 
-    @Path("avoidance")
+    @Path("/avoidance")
     @POST
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
     public void avoidObstacles(@FormParam("avoidance-type") String type) {
