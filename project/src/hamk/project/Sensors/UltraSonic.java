@@ -71,7 +71,9 @@ public class UltraSonic extends Thread {
       * </p>
       */
     private static float roundToCM(float dist) {
-        return Math.round(dist * 10_000) / 100.0f;
+        float n = Math.round(dist * 10_000) / 100.0f;
+        if (n > 250) return 250;
+        return n;
     }
 
     /**

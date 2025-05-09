@@ -88,8 +88,7 @@
 </head>
 <body>
     
-    
-  <h1>Robot State</h1>
+  
 
 <div class="mainwrap">
 
@@ -158,10 +157,10 @@
     </div> -->
     
 <div class="set blue controlpad">
+  <h1>Robot Controller</h1>
       <nav class="d-pad">
-
         <form action="./rest/lego/avoidance" method="POST">
-          <input type="hidden" name="avoidance-type" id="go-around" value="GO_AROUND" onclick="avoidanceForm()"/>
+          <input type="hidden" name="avoidance-type" id="go-around" value="GO_AROUND"/>
           <button class="up control" data-direction="up" type="submit" title="Go Around"></button>
         </form>
         
@@ -177,15 +176,15 @@
         
 
         <form action="./rest/lego/avoidance" method="POST">
-          <input type="hidden" name="avoidance-type" id="turn-around" value="TURN_AROUND" onclick="avoidanceForm()"/>
+          <input type="hidden" name="avoidance-type" id="turn-around" value="TURN_AROUND"/>
           <button class="down control" data-direction="down" type="submit" title="Turn Around"></button>
         </form>
 
     <form action="./rest/lego/avoidance" method="POST">
-      <input type="hidden" name="avoidance-type" id="stop" value="STOP" onclick="avoidanceForm()"/>
+      <input type="hidden" name="avoidance-type" id="stop" value="STOP"/>
       <button class="center-button" type="submit">STOP</button>
     </form>
-      </nav>
+  </nav>
     </div> 
 
 

@@ -153,6 +153,7 @@ public class LegoService {
     @Produces(MediaType.TEXT_HTML)
     public String getCurrentData() {
         RobotValues robot = new RobotValues();
-        return "<h1>" + robot.toString() + "</h1>";
+        // return "<h1>" + robot.toString() + "</h1>";
+        return String.format("<html><head><style>body {color: white;background: transparent;font-family: sans-serif;margin: 0;padding: 1rem;font-size: 10px;}</style></head><body><h1>%s</h1></body></html>", robot.toString());
     }
 }

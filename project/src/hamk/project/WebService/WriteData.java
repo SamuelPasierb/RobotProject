@@ -30,7 +30,7 @@ public class WriteData extends Thread {
     }
 
     /**
-     * Saves data to the database every second.
+     * Saves data to the database every five seconds.
      */
     @Override
     public void run() {

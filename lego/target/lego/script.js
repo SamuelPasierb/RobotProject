@@ -19,7 +19,7 @@ const LINE_FORM = document.getElementById("line-form");
 const AVOIDANCE_FORM = document.getElementById("avoidance-form");
 
 // Constaints TURNS
-const TURN = document.getElementById("turndegrees");
+const TURN = document.getElementById("turn-degrees");
 
 // Constats DATA
 const DATA_IFRAME = document.getElementById("data-iframe");
@@ -87,18 +87,6 @@ SPEED_SETTER.onclick = function () {
 // Obstacle avoidance form
 function avoidanceForm() {
     AVOIDANCE_FORM.submit();
-}
-
-// Turning
-var degrees = 0;
-function turnDegrees(val) {
-
-    // Outside of range
-    if (degrees + val < -5 || degrees + val > 5) return;
-    
-    // Update values
-    degrees += val;
-    TURN.innerText = degrees * 10 + "°";
 }
 
 // Refresh data
