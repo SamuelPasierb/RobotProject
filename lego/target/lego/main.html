@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css">
+    <link rel="stylesheet" href="styles.css">
+   
+</head>
+<body>
+    
+    
+  <h1>Robot State</h1>
+
+<div class="mainwrap">
+
+  
+  
+  <div class="speedometer">
+    <div>
+      
+      <h3 class="object-title">Speed</h3>
+      <div class="object">
+        <div id="speedometer" class="pie" data-pie='{ 
+          "size": 250,
+          "number": false,
+          "cut": 30,
+          "percent": 0,
+          "rotation": 144,
+          "colorSlice": "#F50057",
+          "colorCircle": "#f1f1f1"}'>
+          <h3 id="speed">0 m/s</h3>
+        </div>
+
+        <div class="control-block">
+          <div class="speed-labels">
+            <h3 class="speed-label">0</h3>
+            <h3 class="speed-label">500</h3>
+          </div>
+        
+          <form action="./rest/lego/changespeed" method="POST" id="speed-form">
+            <label for="speedRange" class="visually-hidden">Set Speed</label>
+            <input
+              type="range"
+              id="speedRange"
+              name="speed"
+              class="slider"
+              min="0"
+              max="500"
+              value="0"
+            />
+          </form>
+        </div>
+  
+        <div class="control-block1">
+          <h3>Set Speed Manually</h3>
+          <form class="d-flex" action="./rest/lego/setspeed" method="POST">
+            <input id="set-speed" type="text" name="setspeed" value="">
+            <input type="submit" name="ok" value="Send" id="speed-setter">
+          </form>
+        </div>
+
+        <h4 id="average-speed">Average speed: not enought data</h4>
+      </div>
+      
+    </div>
+  </div>
+  
+  
+
+
+    <!-- <div class="set blue controlpad">
+      <nav class="d-pad">
+        <a class="up control" data-direction="up"></a>
+        <a class="right control" data-direction="right"></a>
+        <a class="down control" data-direction="down"></a>
+        <a class="left control" data-direction="left"></a>
+      </nav>     
+    </div> -->
+    
+<div class="set blue controlpad">
+      <nav class="d-pad">
+
+        <form action="./rest/lego/avoidance" method="POST">
+          <input type="hidden" name="avoidance-type" id="go-around" value="GO_AROUND" onclick="avoidanceForm()"/>
+          <button class="up control" data-direction="up" type="submit" title="Go Around"></button>
+        </form>
+        
+
+        <form action="./rest/lego/turn/left" method="POST">
+          <button class="left control" data-direction="left" type="submit"></button>
+        </form>
+        
+
+        <form action="./rest/lego/turn/right" method="POST">
+          <button class="right control" data-direction="right" type="submit"></button>
+        </form>
+        
+
+        <form action="./rest/lego/avoidance" method="POST">
+          <input type="hidden" name="avoidance-type" id="turn-around" value="TURN_AROUND" onclick="avoidanceForm()"/>
+          <button class="down control" data-direction="down" type="submit" title="Turn Around"></button>
+        </form>
+
+    <form action="./rest/lego/avoidance" method="POST">
+      <input type="hidden" name="avoidance-type" id="stop" value="STOP" onclick="avoidanceForm()"/>
+      <button class="center-button" type="submit">STOP</button>
+    </form>
+      </nav>
+    </div> 
+
+
+    <div class="controls">
+      
+      <div class="control-block">
+        <h3>Line Follower Switch</h3>
+
+        <form action="./rest/lego/line" method="POST" id="line-form">
+          <input type="checkbox" name="linefollower" id="line-switch" onclick="document.getElementById('line-form').submit()" value="true">
+        </form>
+
+      </div>
+      
+      <!-- <div class="control-block"> 
+        <h3>Obstacle Avoidance</h3>
+        <form action="./rest/lego/avoidance" method="POST" id="avoidance-form">
+          <fieldset>
+            <legend>Select an avoidance action:</legend>
+      
+            <div class="radio-option">
+              <input
+                type="radio"
+                name="avoidance-type"
+                id="stop"
+                value="STOP"
+                onclick="avoidanceForm()"
+                checked
+              />
+              <label for="stop">Just stop</label>
+            </div>
+      
+            <div class="radio-option">
+              <input
+                type="radio"
+                name="avoidance-type"
+                id="turn-around"
+                value="TURN_AROUND"
+                onclick="avoidanceForm()"
+              />
+              <label for="turn-around">Turn around</label>
+            </div>
+      
+            <div class="radio-option">
+              <input
+                type="radio"
+                name="avoidance-type"
+                id="go-around"
+                value="GO_AROUND"
+                onclick="avoidanceForm()"
+              />
+              <label for="go-around">Go around</label>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+      <div class="control-block">
+        <form action="./rest/lego/turn/left" method="POST"><input type="submit" name="turnleft" value="TURN LEFT"></form>
+        <form action="./rest/lego/turn/right" method="POST"><input type="submit" name="turnright" value="TURN RIGHT"></form>
+      </div>  -->
+
+      <div class="object">
+        <iframe src="./rest/lego/currentdata" id="data-iframe"></iframe>
+      </div>
+    </div> 
+    
+  </div>
+</div>
+
+
+
+
+
+
+
+
+<svg style="position: absolute; width: 0; height: 0;" aria-hidden="true">
+  <defs>
+    <symbol id="lego-logo">
+      <path d="M12.624 1.894c.188-.549.75-.833 1.207-.787.216.022.36.111.439.231s.156.361.044.81a.55.55 0 1 0 1.067.267c.163-.654.103-1.239-.196-1.689S14.413.057 13.941.01c-.914-.092-1.999.448-2.364 1.546l-.004.011L9.94 7.295C9.555 8.651 10.57 10 11.976 10c.971 0 1.818-.663 2.053-1.607l.803-3.221a.55.55 0 0 0-.534-.685h-1.1a.551.551 0 1 0 0 1.103h.396l-.632 2.536c-.113.454-.52.772-.986.772a1.02 1.02 0 0 1-.977-1.299l1.626-5.704zM2.883.093a.55.55 0 0 1 .4.669L1.254 8.897H3.85a.551.551 0 0 1 0 1.103H.55a.55.55 0 0 1-.433-.212.55.55 0 0 1-.1-.473l2.2-8.821a.55.55 0 0 1 .667-.401zm4.283.401A.55.55 0 0 1 7.7.076h2.75a.55.55 0 0 1 .55.551.55.55 0 0 1-.55.551H8.13l-.825 3.308h.945a.551.551 0 1 1 0 1.103H7.03l-.825 3.308H8.25a.551.551 0 0 1 0 1.103H5.5a.55.55 0 0 1-.534-.685l2.2-8.821zm11.682.685a1.05 1.05 0 0 0-1.019.798L16.43 7.589c-.166.665.336 1.309 1.019 1.309a1.05 1.05 0 0 0 1.019-.798l1.4-5.612c.166-.665-.336-1.309-1.019-1.309zm-2.086.53A2.15 2.15 0 0 1 18.848.076c1.399 0 2.426 1.318 2.086 2.679l-1.399 5.612A2.15 2.15 0 0 1 17.449 10c-1.399 0-2.426-1.318-2.086-2.679l1.399-5.612z" />
+    </symbol>
+  </defs>
+</svg>
+    <script src="https://cdn.jsdelivr.net/gh/tomik23/circular-progress-bar@latest/docs/circularProgressBar.min.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
