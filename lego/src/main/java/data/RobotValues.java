@@ -60,7 +60,7 @@ public class RobotValues {
     public static void setSpeed(int speed) {
         
         // Can use this speed
-        if (speed > MIN_SPEED && speed < MAX_SPEED) {
+        if (speed >= MIN_SPEED && speed <= MAX_SPEED) {
             _speed = speed;
         }
 

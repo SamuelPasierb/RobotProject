@@ -28,7 +28,7 @@ public class ReadData extends Thread {
      * Thread for reading data from the web service from {@code http://172.31.164.138:8080/lego/rest/lego/get}
      */
     public ReadData() {
-        this.IP = "192.168.0.15"; //"172.31.164.138";
+        this.IP = /* "192.168.0.15"; */ "172.31.164.138";
         try {
             url = new URI("http://" + IP + ":8080/lego/rest/lego/get").toURL();
         } catch (MalformedURLException | URISyntaxException e) {
